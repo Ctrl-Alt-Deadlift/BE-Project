@@ -18,9 +18,6 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "types": [
-      "@react-three/fiber"
-    ]
   },
   "exclude": [
     "node_modules"
