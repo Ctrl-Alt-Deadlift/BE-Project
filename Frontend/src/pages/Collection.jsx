@@ -75,7 +75,7 @@ const Collection = () => {
   useEffect(() => {
     console.log(`Category = ${category}\nSubcategory=${Subcategory}`);
     applyFilter();
-  }, [category, Subcategory, search])
+  }, [category, Subcategory, search, showSearch, products])
 
   useEffect(() => {
     sortProducts();
