@@ -32,6 +32,38 @@ const PlaceOrder = () => {
     setFormData(data => ({ ...data, [name]: value }));
   }
 
+  const initPay = (order) => {
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: order.amount,
+      currency: order.currency,
+      name: 'Order Payment',
+      description: 'Order Payment',
+      order_id: order.id,
+      receipt: order.receipt,
+      handler: async (response) => {
+        console.log(response);
+        try {
+          const { data } = await axios.post(backendUrl + '/api/order/verifyRazorpay', response, { headers: { token } });
+          if (data.success) {
+            setCartItems({});
+            navigate('/orders');
+          }
+          else {
+            navigate('/cart');
+          }
+        }
+        catch (error) {
+          console.log(error);
+          toast.error(error.message);
+        }
+      }
+    }
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  }
+
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     try {
@@ -72,6 +104,24 @@ const PlaceOrder = () => {
           }
           break;
 
+        case 'stripe':
+          const responseStripe = await axios.post(backendUrl + '/api/order/stripe', orderData, { headers: { token } });
+          if (responseStripe.status === 200) {
+            const { session_url } = responseStripe.data;
+            window.location.replace(session_url);
+          }
+          else {
+            toast.error(responseStripe.data.message);
+          }
+          break;
+
+        case 'razorpay':
+          const responseRazorpay = await axios.post(backendUrl + '/api/order/razorpay', orderData, { headers: { token } });
+          if (responseRazorpay.data.success) {
+            // console.log(responseRazorpay.data.order);
+            initPay(responseRazorpay.data.order);
+          }
+
 
         default:
           break;
@@ -83,6 +133,9 @@ const PlaceOrder = () => {
 
     }
   }
+
+
+
   return (
     <form onSubmit={onSubmitHandler} className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t">
       {/*Left Side*/}

@@ -8,6 +8,10 @@
   font-family: Outfit;
 }
 
+body{
+  overflow-y: scroll;
+}
+
 select,
 input,
 textarea {
@@ -20,3 +24,5 @@ textarea {
   background-color: #ffebf5;
   border-color: #c586A5
 }
+
+
