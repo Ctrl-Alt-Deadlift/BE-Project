@@ -35,7 +35,9 @@ const Login = () => {
           localStorage.setItem('token', response.data.token)
         }
         else {
-          toast.error('Invalid Credentials');
+          toast.error('Invalid Credentials', {
+            autoClose: 2000,
+          });
         }
       }
 
@@ -49,10 +51,11 @@ const Login = () => {
   useEffect(() => {
     if (token) {
       toast.success("Welcome", {
-        autoClose: 2000,
+        autoClose: 1000,
       })
       navigate('/');
     }
+
   }, [token])
 
   return (

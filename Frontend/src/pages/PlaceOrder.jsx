@@ -106,6 +106,7 @@ const PlaceOrder = () => {
 
         case 'stripe':
           const responseStripe = await axios.post(backendUrl + '/api/order/stripe', orderData, { headers: { token } });
+          console.log('Stripe response', responseStripe);
           if (responseStripe.status === 200) {
             const { session_url } = responseStripe.data;
             window.location.replace(session_url);
@@ -129,7 +130,18 @@ const PlaceOrder = () => {
     }
     catch (error) {
       console.log(error);
-      toast.error(error.message);
+      if (token === '') {
+        toast.warn('Please login to place order !', {
+          autoClose: 1000
+        });
+        navigate('/login');
+      }
+
+      else {
+        toast.error('error.message', {
+          autoClose: 1000
+        });
+      }
 
     }
   }

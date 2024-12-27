@@ -1,7 +1,8 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { assets } from '../assets/assets.js'
 import { NavLink, Link } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext.jsx'
+import { toast } from 'react-toastify'
 
 const Navbar = () => {
 
@@ -9,13 +10,30 @@ const Navbar = () => {
 
   const [visible, setvisible] = useState(false);
 
+
   const logout = () => {
     navigate('/login');
     localStorage.removeItem('token');
     setToken('');
     setCartItems({});
+    toast.success("User Logged Out", {
+      autoClose: 1000,
+    })
 
   }
+
+
+
+  const setText = () => {
+    if (token !== '') {
+      return 'LOGOUT';
+    }
+
+    else {
+      return 'LOGIN/SIGN-UP'
+    }
+  }
+
   return (
 
 
@@ -118,6 +136,12 @@ const Navbar = () => {
           <NavLink onClick={() => setvisible(false)} className='py-2 pl-6 border' to="/collection">COLLECTIONS</NavLink>
           <NavLink onClick={() => setvisible(false)} className='py-2 pl-6 border' to="/about">ABOUT</NavLink>
           <NavLink onClick={() => setvisible(false)} className='py-2 pl-6 border' to="/contact">CONTACT</NavLink>
+          {/* <NavLink onClick={() => setvisible(false)} className='py-2 pl-6 border' to="/login">SIGN UP / SIGN IN</NavLink> */}
+          <NavLink onClick={() => {
+            setvisible(false);
+            token ? logout() : navigate('/login')
+
+          }} className='py-2 pl-6 border' to='/login' >{setText()}</NavLink>
           <a onClick={() => setvisible(false)} className='py-2 pl-6 border' href='https://ecommerce-website-adminpanel.vercel.app/' target='_blank'>
             ADMIN PANEL
           </a>
@@ -125,8 +149,8 @@ const Navbar = () => {
         </div>
 
 
-      </div>
-    </div>
+      </div >
+    </div >
 
   )
 
