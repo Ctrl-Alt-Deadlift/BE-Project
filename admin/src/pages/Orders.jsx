@@ -4,10 +4,41 @@ import { backendUrl } from '../App.jsx';
 import { toast } from 'react-toastify';
 import { assets } from '../assets/assets.js';
 import { currency } from '../App.jsx';
+import Swal from 'sweetalert2';
 
 const Orders = ({ token }) => {
 
   const [orders, setOrders] = useState([]);
+
+
+  const deleteOrder = async (orderId) => {
+    if (token) {
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.post(backendUrl + '/api/order/remove', { orderId }, { headers: { token } });
+          if (response.status === 200) {
+            await fetchAllOrders();
+            Swal.fire('Deleted!', 'Your order has been deleted.', 'success');
+          } else {
+            toast.error(response.data.message);
+          }
+        } catch (error) {
+          console.log(error);
+          toast.error(error.message);
+        }
+      }
+    }
+  };
 
   const fetchAllOrders = async () => {
 
@@ -95,9 +126,10 @@ const Orders = ({ token }) => {
               <div className='flex align-items-end'>{
                 order.status === "Delivered" ?
 
-                  (<div><img className='w-6 m-auto' src={assets.bin_icon} alt="" />
+                  <div>
+                    <img onClick={() => deleteOrder(order._id)} className='w-6 m-auto' src={assets.bin_icon} alt="" />
                   </div>
-                  ) : null
+                  : null
               } </div>
 
             </div>

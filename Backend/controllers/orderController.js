@@ -228,6 +228,38 @@ const userOrders = async (req, res) => {
 
 }
 
+// const removeProduct = async (req, res) => {
+
+//   try {
+//     await productModel.findByIdAndDelete(req.body.id);
+//     const instance = await productModel.findById(req.body.id);
+//     if (!instance)
+//       res.status(200).json({ success: true, message: "Product removed successfully!" });
+//   }
+//   catch (error) {
+//     console.log(error);
+//     res.status(500).json({ success: false, message: error.message });
+
+//   }
+// }
+const deleteOrder = async (req, res) => {
+  const { orderId } = req.body;
+
+  try {
+    await orderModel.findByIdAndDelete(orderId);
+    const orderInstance = await orderModel.findById(orderId);
+    if (!orderInstance)
+      res.status(200).json({ success: true, message: "Order removed successfully!" });
+    else {
+      res.status(500).json({ success: false, message: "Order not removed" });
+    }
+  }
+  catch (error) {
+    console.log(error);
+  }
+
+}
+
 // update order status from admin panel
 const updateStatus = async (req, res) => {
   try {
@@ -246,4 +278,4 @@ const updateStatus = async (req, res) => {
 
 }
 
-export { verifyRazorpay, placeOrder, placeOrderRazorpay, placeOrderStripe, updateStatus, allOrders, userOrders, verifyStripe };
+export { verifyRazorpay, placeOrder, placeOrderRazorpay, placeOrderStripe, updateStatus, allOrders, userOrders, verifyStripe, deleteOrder };
