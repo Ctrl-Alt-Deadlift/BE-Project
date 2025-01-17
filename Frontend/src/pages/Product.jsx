@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 const Product = () => {
 
   const { productId } = useParams();
-  // console.log(productId);
+  console.log(productId);
   const { products, currency, addToCart } = useContext(ShopContext);
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState('');
@@ -43,14 +43,14 @@ const Product = () => {
 
         {/*Product Images */}
         <div className='flex-1 flex flex-col-reverse gap-3 sm:flex-row'>
-          <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
+          <div className="flex sm:flex-col overflow-x-auto overflow-y-hidden sm:overflow-y-scroll px-2 justify-between sm:justify-normal sm:w-[18.7%] w-full">
             {
               productData.image.map((item, index) => (
                 <img onClick={() => setImage(item)} src={item} key={index} className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer' alt="" />
               ))
             }
           </div>
-          <div className='w-full sm:w-[80%]'>
+          <div className=' w-full sm:w-[80%]'>
             <img className='w-full h-auto' src={image} alt="" />
           </div>
         </div>
@@ -75,7 +75,7 @@ const Product = () => {
             <div className="flex gap-2">
               {
                 productData.sizes.map((item, index) => (
-                  <button onClick={() => setSize(item)} key={index} className={`border py-2 px-4 bg-gray-100 ${item === size ? `border-orange-500` : ''} `}>{item}</button>
+                  <button onClick={() => setSize(item)} key={index} className={`border py-2 px-4 bg-gray-100 ${item === size ? `border-orange-500 bg-orange-200` : ''} `}>{item}</button>
                 ))
               }
             </div>
@@ -86,6 +86,7 @@ const Product = () => {
               addToCart(productData._id, size);
               toast.success("Item added to cart", {
                 autoClose: 2000,
+
               })
             }
 

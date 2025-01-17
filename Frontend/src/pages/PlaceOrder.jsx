@@ -11,7 +11,6 @@ const PlaceOrder = () => {
 
 
   const [pay_method, set_pay_method] = useState('cod');
-
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',

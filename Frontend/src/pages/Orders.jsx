@@ -43,7 +43,7 @@ const Orders = () => {
         })
 
         console.log('printing all orders', allOrdersItems);
-        setOrderData(allOrdersItems);
+        setOrderData(allOrdersItems.reverse());
 
         console.log('printing orderData', orderData);
 

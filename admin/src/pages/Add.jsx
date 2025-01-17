@@ -158,7 +158,7 @@ const Add = ({ token }) => {
         <label className='cursor-pointer' htmlFor="bestseller" >Add to Bestseller</label>
       </div>
 
-      <button type="submit" className='w-28 py-3 mt-4 bg-black text-white'>ADD</button>
+      <button type="submit" className='w-28 py-3 mt-4 hover:bg-black hover:text-white bg-white text-black active:bg-gray-800 border border-black '>ADD</button>
     </form>
   )
 }

@@ -7,9 +7,7 @@ import { toast } from 'react-toastify'
 const Navbar = () => {
 
   const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext);
-
   const [visible, setvisible] = useState(false);
-
 
   const logout = () => {
     navigate('/login');
@@ -21,8 +19,6 @@ const Navbar = () => {
     })
 
   }
-
-
 
   const setText = () => {
     if (token !== '') {
@@ -114,6 +110,7 @@ const Navbar = () => {
           <p className='absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]'>{getCartCount()}</p>
 
         </Link >
+        {/* For Mobile Screens the menu icon (hamburger icon) is shown */}
         <img onClick={() => setvisible(true)} src={assets.menu_icon} className='w-5 cursor-pointer sm:hidden' alt="" />
         <div className=' justify-center items-center hidden sm:flex'>
           <a href='https://ecommerce-website-adminpanel.vercel.app/' target='_blank'>

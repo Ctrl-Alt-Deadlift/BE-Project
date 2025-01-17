@@ -1,6 +1,6 @@
 import { ShopContext } from "../context/ShopContext.jsx"
 import { useContext, useState, useEffect } from "react";
-import { assets } from './../assets/assets';
+import { assets } from '../assets/assets';
 import Title from '../components/Title.jsx';
 import ProductItem from "../components/ProductItem";
 
@@ -13,7 +13,7 @@ const Collection = () => {
   const [Subcategory, setSubcategory] = useState([]);
   const [sortType, setSortType] = useState('relevant');
 
-  // to update categories
+  // to update categories: if the category exists in the array remove it else add it
   const toggleCategory = (e) => {
     if (category.includes(e.target.value)) {
       setCategory(prev => prev.filter(item => item !== e.target.value));

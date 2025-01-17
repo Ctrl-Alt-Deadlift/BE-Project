@@ -92,11 +92,19 @@ const Orders = ({ token }) => {
                 <option value="Out for delivery">Out for delivery</option>
                 <option value="Delivered">Delivered</option>
               </select>
+              <div className='flex align-items-end'>{
+                order.status === "Delivered" ?
+
+                  (<div><img className='w-6 m-auto' src={assets.bin_icon} alt="" />
+                  </div>
+                  ) : null
+              } </div>
+
             </div>
           ))
         }
       </div>
-    </div>
+    </div >
   )
 }
 

@@ -11,7 +11,8 @@ const RelatedProducts = ({ category, subCategory, uid }) => {
   useEffect(() => {
     if (products.length > 0) {
       let productCpy = products.slice();
-      productCpy = productCpy.filter(item => { return item.category === category && item._id !== uid });
+      //productCpy = productCpy.filter(item => { return (item.subCategory === subCategory && item.category === category && item._id !== uid) });
+      productCpy = productCpy.filter(item => { return (item.category === category && item._id !== uid) });
       productCpy = productCpy.filter(item => { return item.subCategory === subCategory && item._id !== uid });
       // console.log(productCpy.slice(0, 5));
       setRelatedProducts(productCpy.slice(0, 5));
