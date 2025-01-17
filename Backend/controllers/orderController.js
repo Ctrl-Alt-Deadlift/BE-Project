@@ -1,11 +1,9 @@
-// import { currency } from '../../admin/src/App.jsx';
 import orderModel from '../models/orderModel.js';
 import userModel from '../models/userModel.js';
-import express from 'express';
 import Stripe from 'stripe';
 import razorpay from 'razorpay';
 
-const currency = 'usd';// change if error occurs
+const currency = 'usd';
 const deliveryCharge = 10;
 
 // gateway initialize
@@ -20,7 +18,6 @@ const razorpayInstance = new razorpay(
 
 // Placing orders using the COD method
 const placeOrder = async (req, res) => {
-
   try {
 
     const { userId, items, amount, address } = req.body;
@@ -196,6 +193,8 @@ const verifyRazorpay = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 }
+
+
 // Display all orders data for admin panel
 const allOrders = async (req, res) => {
 
@@ -210,6 +209,7 @@ const allOrders = async (req, res) => {
   }
 
 }
+
 // Display user orders data for Frontend
 const userOrders = async (req, res) => {
 
@@ -228,20 +228,6 @@ const userOrders = async (req, res) => {
 
 }
 
-// const removeProduct = async (req, res) => {
-
-//   try {
-//     await productModel.findByIdAndDelete(req.body.id);
-//     const instance = await productModel.findById(req.body.id);
-//     if (!instance)
-//       res.status(200).json({ success: true, message: "Product removed successfully!" });
-//   }
-//   catch (error) {
-//     console.log(error);
-//     res.status(500).json({ success: false, message: error.message });
-
-//   }
-// }
 const deleteOrder = async (req, res) => {
   const { orderId } = req.body;
 

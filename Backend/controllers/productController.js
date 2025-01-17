@@ -20,7 +20,7 @@ const addProduct = async (req, res) => {
       return result.secure_url;
     })
   )
-  // console.log(`Images uploaded on cloudinary`, imagesUrl);
+  console.log(`Images uploaded on cloudinary`, imagesUrl);
   const productData = {
     name,
     description,
@@ -40,7 +40,6 @@ const addProduct = async (req, res) => {
   res.status(200).json({ message: "Product Added" });
 
 }
-
 // function for list product
 const listProducts = async (req, res) => {
   try {
@@ -55,6 +54,7 @@ const listProducts = async (req, res) => {
 
   }
 }
+
 // function for removing a product
 const removeProduct = async (req, res) => {
 
@@ -70,6 +70,7 @@ const removeProduct = async (req, res) => {
 
   }
 }
+
 // For getting single product information
 const singleProduct = async (req, res) => {
   try {

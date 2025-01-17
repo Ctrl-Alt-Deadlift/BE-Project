@@ -4,6 +4,8 @@ import { NavLink, Link } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext.jsx'
 import { toast } from 'react-toastify'
 
+
+
 const Navbar = () => {
 
   const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext);
@@ -36,47 +38,33 @@ const Navbar = () => {
 
     <div className="flex items-center justify-start sm:justify-between py-5 font-medium">
 
-      {/* <Link to="/"><p className='font-serif font-semibold text-3xl text-pink-600 italic'>Fashionify<span className='text-2xl text-pink-800'>.com</span></p></Link> */}
-      {/* <Link to="/">
-        <p className="font-serif rounded-full font-bold text-4xl text-pink-600 italic transition-all duration-300 ease-in-out">
-          <span className="text-white bg-gradient-to-r from-pink-500 via-pink-600 to-pink-800 bg-clip-text text-transparent">_Fashionify_</span>
-          <span className="text-2xl text-pink-900 font-light">.com</span><span>✿</span>
-        </p>
-      </Link> */}
+
 
       <Link to="/">
-        <div className='mr-[10px] flex justify-start'>
-          <p className="font-serif rounded-full text-3xl font-bold md:text-4xl italic flex items-center justify-start gap-2">
-            <span className="text-pink-700 text-2xl md:text-3xl">✿</span>
-            <span className="text-pink-400">
-              _Fashionify_
-            </span>
-            <span className=" text-xl md:text-2xl text-pink-900 font-light">.com</span>
-          </p>
-        </div>
-
+        <img src={assets.logo_fashionify} className="h-[100px] w-[100px] sm:mr-[0px] mr-[100px] md:h-[150px] md:w-[150px] rounded-lg " alt="" />
       </Link>
+
 
 
       <ul className='hidden sm:flex gap-5  text-sm text-gray-700'>
 
         <NavLink to="/" className='flex flex-col items-center gap-1'>
-          <p>HOME</p>
+          <p className='sm:text-xl'>HOME</p>
           <hr className='w-2/4 border-none h-[2px] bg-gray-700 hidden' />
         </NavLink>
 
         <NavLink to="/collection" className='flex flex-col items-center gap-1'>
-          <p>COLLECTION</p>
+          <p className='sm:text-xl'>COLLECTION</p>
           <hr className='w-2/4 border-none h-[2px] bg-gray-700 hidden' />
         </NavLink>
 
         <NavLink to="/about" className='flex flex-col items-center gap-1'>
-          <p>ABOUT</p>
+          <p className='sm:text-xl'>ABOUT</p>
           <hr className='w-2/4 border-none h-[2px] bg-gray-700 hidden' />
         </NavLink>
 
         <NavLink to="/contact" className='flex flex-col items-center gap-1'>
-          <p>CONTACT</p>
+          <p className='sm:text-xl'>CONTACT</p>
           <hr className='w-2/4 border-none h-[2px] bg-gray-700 hidden' />
         </NavLink>
 
@@ -85,7 +73,7 @@ const Navbar = () => {
 
 
 
-      <div className='flex items-center gap-[10px] sm:gap-6 '>
+      <div className='flex sm:items-center gap-[20px] sm:gap-6 '>
 
         <img src={assets.search_icon} onClick={() => setShowSearch(true)} className='w-5 cursor-pointer' alt="" />
 
@@ -121,6 +109,7 @@ const Navbar = () => {
       </div>
 
 
+
       {/* SideBar menu for small screen */}
       <div className={`absolute top-0 right-0 bottom-0 overflow-hidden bg-white transition-all ${visible ? 'w-full' : 'w-0'} `}>
         <div className='flex flex-col text-gray-600'>
@@ -154,3 +143,4 @@ const Navbar = () => {
 }
 
 export default Navbar
+

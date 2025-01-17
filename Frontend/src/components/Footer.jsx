@@ -8,14 +8,12 @@ const Footer = () => {
         <div>
           {/* <img src={assets.logo} className="mb-5 w-32" alt="" /> */}
 
-          <p className="mb-5 w-32 ml-[100px] font-serif rounded-full font-bold text-4xl text-pink-600 italic flex items-center justify-center gap-2">
-            <span className="text-pink-700 text-3xl">✿</span>
-            <span className="text-pink-400">
-              _Fashionify_
-            </span>
-            <span className="text-2xl text-pink-900 font-light">.com</span>
-          </p>
-          <p className="w-full md:w-2/3 text-gray-600">
+
+
+          <img src={assets.logo_fashionify} className="h-[100px] w-[100px] sm:mr-[0px] mr-[100px] md:h-[150px] md:w-[150px] rounded-lg " alt="" />
+
+
+          <p className="mt-[20px] w-full md:w-2/3 text-gray-600">
             Fashionify is a Gen-Z clothing brand blending bold trends, sustainable fashion, and individuality, empowering self-expression through vibrant, inclusive designs.
           </p>
         </div>
