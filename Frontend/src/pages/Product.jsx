@@ -111,10 +111,99 @@ const Product = () => {
           <b className='border px-5 py-3 text-sm'>Description</b>
           <p className='border px-5 py-3 text-sm'>Reviews (122)</p>
         </div>
-        <div className='flex flex-col gap-4 border px-5 py-6 text-sm text-gray-500'>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae inventore neque fugiat, quasi amet voluptate quam perferendis rem, doloremque autem iste reprehenderit soluta numquam labore voluptatibus voluptas, quo ab dignissimos dicta fugit.</p>
-          <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consectetur, eveniet?</p>
+        {/* <div className='flex flex-col gap-2 border px-5 py-6 text-sm text-gray-500'>
+          <p className='text-gray-600 text-bold'>What customers say about this product.</p>
+          <p className='text-green-500'>Customers says the quality  of material is decent and the fit is also up to the mark.</p>
+          <p className='text-red-500'>Customers express concerns about the time it takes to deliver the product.</p>
+          <div className='flex gap-2 items-center mt-[20px]'>
+            <img className='h-6 w-6 mr-5' src={assets.profile_icon} alt="" />
+            <img className='h-3 w-3' src={assets.star_icon} alt="" />
+            <img className='h-3 w-3' src={assets.star_icon} alt="" />
+            <img className='h-3 w-3' src={assets.star_icon} alt="" />
+            <img className='h-3 w-3' src={assets.star_icon} alt="" />
+            <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
+          </div>
+
+
+          <p>I recently purchased this product, and overall, I’m moderately satisfied. The quality of the material is decent and feels durable, which is a big plus. The fit is also great—exactly as described, so no complaints there. However, the delivery process was quite frustrating. It took much longer than expected, which dampened the overall experience. If the delivery time were improved, this would easily be a much better purchase. For now, I’d recommend this product for its quality and fit, but be prepared to wait a bit longer for it to arrive.</p>
+        </div> */}
+        <div className='flex flex-col gap-2 border px-5 py-6 text-sm text-gray-500'>
+          <p className='text-gray-600 font-bold'>What customers say about this product.</p>
+          <div className='mb-4'>
+            <p className='text-green-500 font-semibold'>Pros: High-quality material, perfect fit, and durable design.</p>
+            <p className='text-red-500 font-semibold'>Cons: Delivery process is slow and needs improvement.</p>
+          </div>
+
+          {/* Dummy Reviews */}
+          <div className='flex flex-col gap-6'>
+            {/* Review 1 */}
+            <div>
+              <div className='flex gap-2 items-center'>
+                <img className='h-6 w-6 mr-5' src={assets.profile_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
+              </div>
+              <p>Good quality and comfortable fit, but delivery took longer than expected.</p>
+            </div>
+
+            {/* Review 2 */}
+            <div>
+              <div className='flex gap-2 items-center'>
+                <img className='h-6 w-6 mr-5' src={assets.profile_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
+              </div>
+              <p>The material is fine, but the delivery delays were disappointing.</p>
+            </div>
+
+            {/* Review 3 */}
+            <div>
+              <div className='flex gap-2 items-center'>
+                <img className='h-6 w-6 mr-5' src={assets.profile_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+              </div>
+              <p>Perfect fit and great quality! The product was worth the wait.</p>
+            </div>
+
+            {/* Review 4 */}
+            <div>
+              <div className='flex gap-2 items-center'>
+                <img className='h-6 w-6 mr-5' src={assets.profile_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
+              </div>
+              <p>The fit is nice, but I was not happy with the delivery time.</p>
+            </div>
+
+            {/* Review 5 */}
+            <div>
+              <div className='flex gap-2 items-center'>
+                <img className='h-6 w-6 mr-5' src={assets.profile_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
+                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
+              </div>
+              <p>The product quality is good, but the slow delivery is a concern.</p>
+            </div>
+          </div>
+          <p className='text-gray-400 mt-[20px] cursor-pointer hover:text-gray-500'>read more...</p>
         </div>
+
       </div>
 
       {/*Similar Products */}
