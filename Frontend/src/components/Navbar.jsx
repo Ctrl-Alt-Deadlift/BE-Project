@@ -101,7 +101,7 @@ const Navbar = () => {
         {/* For Mobile Screens the menu icon (hamburger icon) is shown */}
         <img onClick={() => setvisible(true)} src={assets.menu_icon} className='w-5 cursor-pointer sm:hidden' alt="" />
         <div className=' justify-center items-center hidden sm:flex'>
-          <a href='https://ecommerce-website-adminpanel.vercel.app/' target='_blank'>
+          <a href='https://fashionify-india-adminpanel.vercel.app/' target='_blank'>
             <button className='border-gray-500 border-2 text-gray-500 rounded-xl sm:text-xs  w-[100px] px-3 py-1 text-sm'>admin panel</button>
           </a>
         </div>
