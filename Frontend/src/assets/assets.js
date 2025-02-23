@@ -219,7 +219,7 @@ export const products = [
         category: "Men",
         subCategory: "Bottomwear",
         sizes: ["S", "L", "XL"],
-        date: 1716622235448,
+        date: 1716622235448, // this could be used for storing the date when the product was listed on the platform and till when its available.
         bestseller: false
     },
     {
