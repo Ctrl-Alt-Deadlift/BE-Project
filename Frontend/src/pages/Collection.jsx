@@ -183,6 +183,7 @@ const Collection = () => {
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
   const [sortType, setSortType] = useState('relevant');
+  const [availabilityFilter, setAvailabilityFilter] = useState('all'); // NEW FILTER
 
   // Mapping of categories to their corresponding subcategories
   const categoryToSubCategories = {
@@ -212,7 +213,7 @@ const Collection = () => {
     }
   };
 
-  // Apply filters based on selected categories, subcategories, and search term
+  // Apply filters based on selected categories, subcategories, availability, and search term
   const applyFilter = () => {
     let productsCopy = products.slice();
 
@@ -230,6 +231,13 @@ const Collection = () => {
       productsCopy = productsCopy.filter(item => subCategory.includes(item.subcategory));
     }
 
+    // Apply Availability Filter
+    if (availabilityFilter === 'sale') {
+      productsCopy = productsCopy.filter(item => item.available_for_sale);
+    } else if (availabilityFilter === 'rent') {
+      productsCopy = productsCopy.filter(item => item.available_for_rent);
+    }
+
     setFilterProducts(productsCopy);
   };
 
@@ -242,6 +250,12 @@ const Collection = () => {
       case 'high-low':
         setFilterProducts(sortedProducts.sort((a, b) => b.rent_per_day - a.rent_per_day));
         break;
+      case 'high-low-sale':
+        setFilterProducts(sortedProducts.sort((a, b) => b.sale_price - a.sale_price));
+        break;
+      case 'low-high-sale':
+        setFilterProducts(sortedProducts.sort((a, b) => a.sale_price - b.sale_price));
+        break;
       default:
         applyFilter();
     }
@@ -249,7 +263,7 @@ const Collection = () => {
 
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, search, showSearch, products]);
+  }, [category, subCategory, search, showSearch, products, availabilityFilter]); // ADDED `availabilityFilter`
 
   useEffect(() => {
     sortProducts();
@@ -267,6 +281,46 @@ const Collection = () => {
           FILTERS
           <img src={assets.dropdown_icon} className={`h-3 sm:hidden ${showFilter ? 'rotate-90' : ''}`} />
         </p>
+
+        {/* Availability Filter */}
+        <div className={`border border-gray-300 pl-5 py-3 my-5 ${showFilter ? '' : 'hidden'} sm:block`}>
+          <p className="mb-3 text-sm font-medium">AVAILABILITY</p>
+          <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
+            <label className="flex gap-2">
+              <input
+                type="radio"
+                className="w-3"
+                name="availability"
+                value="all"
+                checked={availabilityFilter === "all"}
+                onChange={() => setAvailabilityFilter("all")}
+              />
+              All
+            </label>
+            <label className="flex gap-2">
+              <input
+                type="radio"
+                className="w-3"
+                name="availability"
+                value="sale"
+                checked={availabilityFilter === "sale"}
+                onChange={() => setAvailabilityFilter("sale")}
+              />
+              For Sale
+            </label>
+            <label className="flex gap-2">
+              <input
+                type="radio"
+                className="w-3"
+                name="availability"
+                value="rent"
+                checked={availabilityFilter === "rent"}
+                onChange={() => setAvailabilityFilter("rent")}
+              />
+              For Rent
+            </label>
+          </div>
+        </div>
 
         {/* Category Filter */}
         <div className={`border border-gray-300 pl-5 py-3 my-5 ${showFilter ? '' : 'hidden'} sm:block`}>
@@ -311,21 +365,31 @@ const Collection = () => {
           <Title text1={"All"} text2={"COLLECTIONS"} />
 
           <select onChange={(e) => setSortType(e.target.value)} className="border-2 border-gray-300 text-sm px-2">
-            <option value="relevant">Sort by: Relevant</option>
-            <option value="low-high">Sort by: Low to High</option>
-            <option value="high-low">Sort by: High to Low</option>
+            <option value="relevant">Sort by: Relevant </option>
+            <option value="low-high">Sort by: Low to High( Rent Per Day )</option>
+            <option value="high-low">Sort by: High to Low( Rent Per Day )</option>
+            <option value="high-low-sale">Sort by: High to Low ( Selling Price )</option>
+            <option value="low-high-sale">Sort by: Low to High ( Selling Price )</option>
           </select>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
           {filterProducts.length > 0 ? (
             filterProducts.map((item, index) => (
-              <ProductItem key={index} name={item.name} id={item._id} price={item.rent_per_day} image={item.image} />
+              <ProductItem
+                key={index}
+                name={item.name}
+                id={item._id}
+                salePrice={item.available_for_sale ? item.sale_price : null}
+                rentPrice={item.available_for_rent ? item.rent_per_day : null}
+                image={item.image}
+              />
             ))
           ) : (
             <p className="text-gray-500 col-span-4 text-center">No products found.</p>
           )}
         </div>
+
       </div>
     </div>
   );

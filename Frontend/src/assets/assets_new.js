@@ -120,7 +120,7 @@ export const products = [
     terms_n_conditions: "The renter is responsible for any physical damage during the rental period. ID proof required.",
     deposit: 7000,
     return_policy: "Returns are accepted only if the product has manufacturing defects reported within 24 hours of pickup.",
-    bestseller: true
+
   },
   {
     _id: "item002",
@@ -139,7 +139,7 @@ export const products = [
     terms_n_conditions: "Physical damage will lead to additional charges. The laptop must be returned with all accessories.",
     deposit: 15000,
     return_policy: "Refund is available only for rental cancellations before pickup.",
-    bestseller: true
+
   },
   {
     _id: "item003",
@@ -151,6 +151,7 @@ export const products = [
     subcategory: "Gaming Equipment",
     quantity: 4,
     available_for_sale: true,
+    sale_price: 15000,
     available_for_rent: true,
     TopRental: true,
     date_listed: 1740239817000,
@@ -158,7 +159,7 @@ export const products = [
     terms_n_conditions: "Controller damage will be charged separately. Online account login details must not be changed.",
     deposit: 8000,
     return_policy: "Returns are not accepted once rented. Sale returns within 7 days for manufacturing defects only.",
-    bestseller: true
+
   },
   {
     _id: "item004",
@@ -170,6 +171,7 @@ export const products = [
     subcategory: "Cricket",
     quantity: 6,
     available_for_sale: true,
+    sale_price: 5000,
     available_for_rent: true,
     TopRental: true,
     date_listed: 1740239817000,
@@ -177,7 +179,6 @@ export const products = [
     terms_n_conditions: "Only light wear and tear allowed. Bat must be returned in proper condition.",
     deposit: 2000,
     return_policy: "Returns not accepted once used in matches. Sale returns within 3 days for manufacturing defects.",
-    bestseller: true
   },
   {
     _id: "item005",
@@ -189,6 +190,7 @@ export const products = [
     subcategory: "Football",
     quantity: 10,
     available_for_sale: true,
+    sale_price: 2000,
     available_for_rent: true,
     TopRental: false,
     date_listed: 1740239817000,
@@ -196,7 +198,6 @@ export const products = [
     terms_n_conditions: "The ball should not be used on rough surfaces. Loss of air due to puncture is chargeable.",
     deposit: 500,
     return_policy: "Refunds only available for defective balls before first use.",
-    bestseller: true
   },
   {
     _id: "item006",
@@ -208,6 +209,7 @@ export const products = [
     subcategory: "Gym Equipment",
     quantity: 5,
     available_for_sale: true,
+    sale_price: 3000,
     available_for_rent: true,
     TopRental: false,
     date_listed: 1740239817000,
@@ -215,7 +217,6 @@ export const products = [
     terms_n_conditions: "Must be returned in clean condition. Rust or weight loss will incur charges.",
     deposit: 1000,
     return_policy: "Refunds only if damage is reported within 24 hours of delivery.",
-    bestseller: true
   },
   {
     _id: "item007",
@@ -234,7 +235,6 @@ export const products = [
     terms_n_conditions: "Water damage is not covered in rental. Loss of accessories will be charged.",
     deposit: 5000,
     return_policy: "Returns available for defective units only within 12 hours of pickup.",
-    bestseller: false
   },
   {
     _id: "item008",
@@ -253,7 +253,6 @@ export const products = [
     terms_n_conditions: "Screen damage will be charged separately. The laptop must be returned formatted.",
     deposit: 20000,
     return_policy: "Refund for rental cancellations only before pickup.",
-    bestseller: false
   },
   {
     _id: "item009",
@@ -265,6 +264,7 @@ export const products = [
     subcategory: "Gaming Equipment",
     quantity: 4,
     available_for_sale: true,
+    sale_price: 15000,
     available_for_rent: true,
     TopRental: true,
     date_listed: 1740239817000,
@@ -272,7 +272,7 @@ export const products = [
     terms_n_conditions: "Any modification or tampering with the device will lead to penalties.",
     deposit: 9000,
     return_policy: "Returns only for hardware failures within 3 days of delivery.",
-    bestseller: false
+
   },
   {
     _id: "item010",
@@ -291,7 +291,7 @@ export const products = [
     terms_n_conditions: "Lens should be returned without scratches or internal dust issues.",
     deposit: 6000,
     return_policy: "Returns accepted only if the lens is found defective within 24 hours of delivery.",
-    bestseller: false
+
   },
   {
     _id: "item011",
@@ -310,7 +310,7 @@ export const products = [
     terms_n_conditions: "Laptop must be returned with all accessories in working condition.",
     deposit: 12000,
     return_policy: "No refunds once rented. Cancellations before pickup are allowed.",
-    bestseller: false
+
   },
   {
     _id: "item012",
@@ -322,6 +322,7 @@ export const products = [
     subcategory: "Gaming Equipment",
     quantity: 5,
     available_for_sale: true,
+    sale_price: 10000,
     available_for_rent: true,
     TopRental: true,
     date_listed: 1740508217000,
@@ -329,7 +330,7 @@ export const products = [
     terms_n_conditions: "Any software modifications or unauthorized repairs will void the rental agreement.",
     deposit: 7500,
     return_policy: "Returns only accepted for hardware issues within 48 hours.",
-    bestseller: false
+
   },
   {
     _id: "item013",
@@ -341,6 +342,7 @@ export const products = [
     subcategory: "Cricket",
     quantity: 4,
     available_for_sale: true,
+    sale_price: 8000,
     available_for_rent: true,
     TopRental: true,
     date_listed: 1740539217000,
@@ -348,7 +350,6 @@ export const products = [
     terms_n_conditions: "Kit must be returned in good condition. Any loss or damage will incur additional charges.",
     deposit: 3000,
     return_policy: "Refund only applicable for manufacturer defects before use.",
-    bestseller: false
   },
   {
     _id: "item014",
@@ -360,6 +361,7 @@ export const products = [
     subcategory: "Football",
     quantity: 8,
     available_for_sale: true,
+    sale_price: 1500,
     available_for_rent: true,
     TopRental: false,
     date_listed: 1740560217000,
@@ -367,7 +369,7 @@ export const products = [
     terms_n_conditions: "The ball should not be used on concrete surfaces. Punctures are chargeable.",
     deposit: 500,
     return_policy: "Returns only accepted for manufacturing defects before first use.",
-    bestseller: false
+
   },
   {
     _id: "item015",
@@ -379,6 +381,7 @@ export const products = [
     subcategory: "Gym Equipment",
     quantity: 6,
     available_for_sale: true,
+    sale_price: 5000,
     available_for_rent: true,
     TopRental: false,
     date_listed: 1740581217000,
@@ -386,7 +389,7 @@ export const products = [
     terms_n_conditions: "Weights must be returned with no rust or visible damage.",
     deposit: 2500,
     return_policy: "Refunds available only if reported defective within 12 hours of delivery.",
-    bestseller: false
+
   },
   {
     _id: "item016",
@@ -405,7 +408,7 @@ export const products = [
     terms_n_conditions: "Flight logs will be checked for any crashes or unauthorized modifications.",
     deposit: 10000,
     return_policy: "Returns only for internal defects within 24 hours of rental start.",
-    bestseller: false
+
   },
   {
     _id: "item017",
@@ -424,7 +427,7 @@ export const products = [
     terms_n_conditions: "Laptop should be returned without scratches. Any hardware damage will be chargeable.",
     deposit: 20000,
     return_policy: "Refund available only for pre-rental cancellations.",
-    bestseller: false
+
   },
   {
     _id: "item018",
@@ -436,6 +439,7 @@ export const products = [
     subcategory: "Gaming Equipment",
     quantity: 5,
     available_for_sale: true,
+    sale_price: 20000,
     available_for_rent: true,
     TopRental: true,
     date_listed: 1740644217000,
@@ -443,7 +447,7 @@ export const products = [
     terms_n_conditions: "Must be returned with original lenses and controllers intact.",
     deposit: 8000,
     return_policy: "Returns only for manufacturing defects within 48 hours of rental.",
-    bestseller: false
+
   },
   {
     _id: "item019",
@@ -455,6 +459,7 @@ export const products = [
     subcategory: "Football",
     quantity: 7,
     available_for_sale: true,
+    sale_price: 1200,
     available_for_rent: true,
     TopRental: false,
     date_listed: 1740665217000,
@@ -462,7 +467,7 @@ export const products = [
     terms_n_conditions: "Ball must be used indoors. Outdoor use voids refund policy.",
     deposit: 600,
     return_policy: "Returns accepted only for defects before first use.",
-    bestseller: false
+
   }
 
 ]
