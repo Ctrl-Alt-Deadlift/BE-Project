@@ -7,6 +7,7 @@ import Contact from "./pages/Contact.jsx"
 import Product from "./pages/Product.jsx"
 import About from "./pages/About.jsx"
 import Cart from "./pages/Cart.jsx"
+import Cart_r from "./pages/Cart_r.jsx"
 import Login from './pages/Login.jsx'
 import Orders from './pages/Orders.jsx'
 import PlaceOrder from './pages/PlaceOrder.jsx'
@@ -30,6 +31,7 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/product/:productId" element={<Product />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/cart_r" element={<Cart_r />} />
         <Route path="/login" element={<Login />} />
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/orders" element={<Orders />} />

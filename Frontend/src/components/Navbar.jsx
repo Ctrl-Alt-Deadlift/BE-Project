@@ -3,12 +3,13 @@ import { assets } from '../assets/assets.js'
 import { NavLink, Link } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext.jsx'
 import { toast } from 'react-toastify'
+import { BsCart4 } from "react-icons/bs";
 
 
 
 const Navbar = () => {
 
-  const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext);
+  const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems, setRentalItems, getCartCount_r } = useContext(ShopContext);
   const [visible, setvisible] = useState(false);
 
   const logout = () => {
@@ -94,11 +95,17 @@ const Navbar = () => {
         </div>
 
         <Link to='/cart' className='relative'>
-          <img src={assets.cart_icon} alt="" className='w-5 min-w-5' />
+          <BsCart4 className='h-6 w-6' />
           <p className='absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]'>{getCartCount()}</p>
+        </Link >
 
+        <Link to='/cart_r' className='relative'>
+          <img src={assets.cart_icon} alt="" className='w-5 min-w-5' />
+          <p className='absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]'>{getCartCount_r()}</p>
         </Link >
         {/* For Mobile Screens the menu icon (hamburger icon) is shown */}
+
+
         <img onClick={() => setvisible(true)} src={assets.menu_icon} className='w-5 cursor-pointer sm:hidden' alt="" />
         <div className=' justify-center items-center hidden sm:flex'>
           <a href='https://fashionify-india-adminpanel.vercel.app/' target='_blank'>
