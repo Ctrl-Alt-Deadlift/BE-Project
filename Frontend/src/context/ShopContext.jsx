@@ -337,12 +337,28 @@ const ShopContextProvider = (props) => {
     });
   };
 
+  const calculateDeposit = () => {
+    let total_deposit = 0;
+
+    for (const itemId in rentalItems) {
+      let itemInfo = products.find((product) => product._id === itemId);
+      if (!itemInfo) continue; // Skip if item is missing
+
+      let quantity = rentalItems[itemId].quantity || 0;
+      let deposit = itemInfo.deposit;
+
+      total_deposit += deposit * quantity;
+    }
+
+    return total_deposit;
+  }
+
 
 
   const value = {
     products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, addToCart, cartItems,
     getCartCount, updateQuantity, getCartAmount, navigate, addToCart_r, rentalItems, setRentalItems,
-    getCartCount_r, updateQuantity_r, getCartAmount_r, updateDuration
+    getCartCount_r, updateQuantity_r, getCartAmount_r, updateDuration, calculateDeposit
   }
 
   return (

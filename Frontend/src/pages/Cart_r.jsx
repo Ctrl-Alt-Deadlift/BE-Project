@@ -46,7 +46,11 @@ const Cart_r = () => {
                 <div>
                   <p className='text-xs sm:text-lg font-medium'>{productData.name}</p>
                   <div className='flex items-center gap-5 mt-2'>
-                    <p>{currency}{productData.rent_per_day} / day</p>
+
+                    <div className='flex flex-col gap-2'>
+                      <p>Rent: {currency}{productData.rent_per_day} / day</p>
+                      <p>Deposit: {currency}{productData.deposit} / item </p>
+                    </div>
 
                     {/* 🔽 Rental Duration Dropdown */}
                     <div className="relative">

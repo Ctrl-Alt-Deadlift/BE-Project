@@ -3,7 +3,7 @@ import { ShopContext } from "../context/ShopContext.jsx"
 import Title from './Title';
 
 const CartTotal_r = () => {  // Accept rentDuration as a prop
-  const { currency, delivery_fee, getCartAmount_r } = useContext(ShopContext);
+  const { currency, delivery_fee, getCartAmount_r, calculateDeposit } = useContext(ShopContext);
 
   return (
     <div className="w-full">
@@ -23,8 +23,13 @@ const CartTotal_r = () => {  // Accept rentDuration as a prop
         </div>
         <hr />
         <div className="flex justify-between">
+          <p>Deposit</p>
+          <p>{currency} {calculateDeposit()}.00</p>
+        </div>
+        <hr />
+        <div className="flex justify-between">
           <b>Total</b>
-          <b>{currency} {getCartAmount_r() === 0 ? 0 : getCartAmount_r() + delivery_fee}.00</b>
+          <b>{currency} {getCartAmount_r() === 0 ? 0 : getCartAmount_r() + delivery_fee + calculateDeposit()}.00</b>
         </div>
       </div>
     </div>
