@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { ShopContext } from "../context/ShopContext.jsx"
-import Title from './Title';
+import Title from './Title.jsx';
 
 const CartTotal_r = () => {  // Accept rentDuration as a prop
   const { currency, delivery_fee, getCartAmount_r, calculateDeposit } = useContext(ShopContext);

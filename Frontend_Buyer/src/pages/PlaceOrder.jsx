@@ -1,5 +1,5 @@
 import Title from "../components/Title.jsx"
-import CartTotal from "../components/CartTotal"
+import CartTotal from "../components/CartTotal.jsx"
 import { assets } from '../assets/assets.js'
 import { useContext, useState } from "react"
 import { ShopContext } from "../context/ShopContext.jsx"

@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { useContext, useState, useEffect } from "react"
 import { ShopContext } from "../context/ShopContext.jsx"
-import Title from './Title';
-import ProductItem from './ProductItem';
+import Title from './Title.jsx';
+import ProductItem from './ProductItem.jsx';
 
 
 const LatestCollection = () => {
