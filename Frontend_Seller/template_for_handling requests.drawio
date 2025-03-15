@@ -1,29 +1,86 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36" version="26.1.1">
   <diagram name="Page-1" id="CIPakMB1GzST_sqyx0el">
-    <mxGraphModel dx="880" dy="466" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1467" dy="777" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="jYyRJb0wWEmul5kKWIG7-2" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="170" y="140" width="480" height="140" as="geometry" />
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-34" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="150" y="460" width="1060" height="640" as="geometry" />
         </mxCell>
-        <mxCell id="jYyRJb0wWEmul5kKWIG7-3" value="Status of Request for Add Product" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-          <mxGeometry x="310" y="100" width="200" height="30" as="geometry" />
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-35" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-34">
+          <mxGeometry y="40" width="480" height="140" as="geometry" />
         </mxCell>
-        <mxCell id="jYyRJb0wWEmul5kKWIG7-6" value="request_id" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="185" y="150" width="70" height="20" as="geometry" />
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-37" value="request_id" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-34">
+          <mxGeometry x="15" y="50" width="70" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="jYyRJb0wWEmul5kKWIG7-7" value="Quantity" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="330" y="190" width="70" height="20" as="geometry" />
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-38" value="Quantity" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-34">
+          <mxGeometry x="15" y="150" width="70" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="jYyRJb0wWEmul5kKWIG7-9" value="ProductName" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="320" y="160" width="90" height="20" as="geometry" />
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-39" value="ProductName" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-34">
+          <mxGeometry x="15" y="120" width="90" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="jYyRJb0wWEmul5kKWIG7-4" value="product_id" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="185" y="180" width="70" height="20" as="geometry" />
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-40" value="product_id" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-34">
+          <mxGeometry x="15" y="80" width="70" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="jYyRJb0wWEmul5kKWIG7-13" value="Request Status" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="360" y="150" width="120" height="60" as="geometry" />
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-41" value="Request Status" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-34">
+          <mxGeometry x="300" y="50" width="90" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-42" value="Admin Message" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-34">
+          <mxGeometry x="300" y="100" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-24" value="" style="group" vertex="1" connectable="0" parent="jYyRJb0wWEmul5kKWIG7-34">
+          <mxGeometry x="120" y="-320" width="930" height="980" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-44" value="" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-24">
+          <mxGeometry x="-80" y="-30" width="1010" height="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-2" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-24">
+          <mxGeometry y="40" width="480" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-3" value="Request Status" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-24">
+          <mxGeometry x="185" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-6" value="request_id" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-24">
+          <mxGeometry x="15" y="50" width="70" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-7" value="Quantity" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-24">
+          <mxGeometry x="15" y="150" width="70" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-9" value="ProductName" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-24">
+          <mxGeometry x="15" y="120" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-4" value="product_id" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-24">
+          <mxGeometry x="15" y="80" width="70" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-13" value="Request Status" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-24">
+          <mxGeometry x="300" y="50" width="90" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-14" value="Admin Message" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-24">
+          <mxGeometry x="300" y="100" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-25" value="" style="group" vertex="1" connectable="0" parent="jYyRJb0wWEmul5kKWIG7-24">
+          <mxGeometry x="25" y="200" width="480" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-26" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-25">
+          <mxGeometry y="40" width="480" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-28" value="request_id" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-25">
+          <mxGeometry x="15" y="50" width="70" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-29" value="Quantity" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-25">
+          <mxGeometry x="15" y="150" width="70" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-30" value="ProductName" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-25">
+          <mxGeometry x="15" y="120" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-31" value="product_id" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-25">
+          <mxGeometry x="15" y="80" width="70" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-32" value="Request Status" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-25">
+          <mxGeometry x="300" y="50" width="90" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jYyRJb0wWEmul5kKWIG7-33" value="Admin Message" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="jYyRJb0wWEmul5kKWIG7-25">
+          <mxGeometry x="300" y="100" width="100" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
