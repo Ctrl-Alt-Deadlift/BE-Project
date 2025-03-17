@@ -51,3 +51,4 @@ cloudinary.config.js
 # Specific directories you want to exclude (customize as needed)
 /uploads
 /temp
+.qodo
