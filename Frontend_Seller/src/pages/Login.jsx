@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const inputStyles = "border border-gray-600 bg-gray-700 p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500";
+const inputStyles2 = " bg-gray-700 p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500";
 const buttonStyles = "w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md transition";
 
 const LoginRegister = () => {
@@ -21,7 +22,11 @@ const LoginRegister = () => {
             <input type="password" placeholder="Password" className={`${inputStyles}`} required />
             <input type="text" placeholder="Address" className={`${inputStyles}`} required />
             <input type="tel" placeholder="Phone" className={`${inputStyles}`} required />
-            <input type="file" className={`${inputStyles} bg-gray-700 p-2`} required />
+            <div>
+              <p className={`${inputStyles2} mb-[10px]`}>Upload PhotoId (Aadhar/Driving License/VoterId) </p>
+              <input type="file" className={`${inputStyles} bg-gray-700 p-2`} required />
+            </div>
+
             <button className={`${buttonStyles}`}>Register</button>
           </form>
         ) : (
