@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
   },
 
   rentalData: {
-    type: object,
+    type: Object,
     default: {}
   }
 
