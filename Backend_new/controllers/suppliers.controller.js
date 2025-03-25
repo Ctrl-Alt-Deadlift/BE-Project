@@ -116,9 +116,37 @@ const loginSupplier = async (req, res) => {
   }
 };
 
-const adminLogin = async (req, res) => {
-  res.status(200).json({ message: "Api working for admin login" });
-}
+const addProduct = async (req, res) => {
+  res.status(200).json({ message: "API working for adding a product" });
+};
+
+// Function for listing products
+const listProducts = async (req, res) => {
+  res.status(200).json({ message: "API working for listing products" });
+};
+
+// Function for removing a product
+const removeProduct = async (req, res) => {
+  res.status(200).json({ message: "API working for removing a product" });
+};
+
+// For getting single product information
+const singleProduct = async (req, res) => {
+  res.status(200).json({ message: "API working for fetching single product information" });
+};
+
+// Function for editing a product
+const editProduct = async (req, res) => {
+  res.status(200).json({ message: "API working for editing a product" });
+};
 
 
-export { adminLogin, loginSupplier, registerSupplier };
+export {
+  loginSupplier,
+  registerSupplier,
+  listProducts,
+  addProduct,
+  removeProduct,
+  singleProduct,
+  editProduct
+};
