@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 import supplierModel from "../models/supplier.model.js";
+import productModel from "../models/product.model.js";
 
 // JWT Secret Key (should be stored in environment variables)
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -117,9 +118,86 @@ const loginSupplier = async (req, res) => {
 };
 
 const addProduct = async (req, res) => {
-  res.status(200).json({ message: "API working for adding a product" });
-};
+  try {
+    const {
+      name, description, quantity, availableForRent, availableForSale,
+      rentPerDay, deposit, salePrice, rentalEndDate, terms, returnPolicy
+    } = req.body;
 
+    // Convert string booleans to actual booleans
+    // const isAvailableForRent = availableForRent === "true";
+    // const isAvailableForSale = availableForSale === "true";
+
+
+
+
+    let isAvailableForRent = availableForRent?.toString().trim() === "true";
+    let isAvailableForSale = availableForSale?.toString().trim() === "true";
+
+    if (!isAvailableForRent && !isAvailableForSale) {
+      return res.status(400).json({ message: "Product should be atleast for rent or sale" });
+    }
+
+    console.log(availableForRent, availableForSale);
+    console.log(isAvailableForRent, isAvailableForSale);
+
+    // take images from upload files
+    const image1 = req.files.image1 && req.files.image1[0];
+    const image2 = req.files.image2 && req.files.image2[0];
+    const image3 = req.files.image3 && req.files.image3[0];
+    const image4 = req.files.image4 && req.files.image4[0];
+
+    const images = [image1, image2, image3, image4].filter((item) => item !== undefined);
+    // console.log(images);
+
+    let imagesUrl = await Promise.all(
+      images.map(async (item) => {
+        let result = await cloudinary.uploader.upload(item.path, { resource_type: 'image' });
+        return result.secure_url;
+      })
+    );
+
+    if (!name || !description || !quantity) {
+      console.log('\n\n\nName', name, '\nDescription', description, '\nQuantity', quantity, '\nisAvailableForRent', isAvailableForRent, '\nisAvailableForSale', isAvailableForSale);
+      return res.status(400).json({ message: "Missing required fields." });
+    }
+
+    if (isAvailableForRent && (!rentPerDay || !deposit || !rentalEndDate)) {
+      return res.status(400).json({ message: "Rental details are required." });
+    }
+
+    if (isAvailableForSale && !salePrice) {
+      return res.status(400).json({ message: "Sale price is required." });
+    }
+
+    // Get supplier ID from token (attached by supplierAuth middleware)
+    const supplierId = req.supplier.id;
+
+    // Create new product
+    const newProduct = new productModel({
+      supplierId,
+      name,
+      description,
+      quantity,
+      availableForRent: isAvailableForRent,
+      availableForSale: isAvailableForSale,
+      rentPerDay: isAvailableForRent ? rentPerDay : null,
+      deposit: isAvailableForRent ? deposit : null,
+      rentalEndDate: isAvailableForRent ? rentalEndDate : null,
+      salePrice: isAvailableForSale ? salePrice : null,
+      images: imagesUrl, // Store Cloudinary URLs
+      terms,
+      returnPolicy
+    });
+
+    await newProduct.save();
+    res.status(201).json({ message: "Product added successfully.", product: newProduct });
+
+  } catch (error) {
+    console.error("Error adding product:", error);
+    res.status(500).json({ message: "Internal Server Error." });
+  }
+};
 // Function for listing products
 const listProducts = async (req, res) => {
   res.status(200).json({ message: "API working for listing products" });
