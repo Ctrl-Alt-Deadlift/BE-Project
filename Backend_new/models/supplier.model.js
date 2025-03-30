@@ -38,8 +38,9 @@ const supplierSchema = new mongoose.Schema(
     },
 
     supplierGoods: {
-      type: Object,
-      default: {},
+      type: [mongoose.Schema.Types.ObjectId], // Array of product IDs
+      ref: "product", // Reference to Product Model
+      default: [],
     },
   },
   { minimize: false, timestamps: true }

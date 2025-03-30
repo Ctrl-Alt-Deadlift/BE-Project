@@ -17,11 +17,15 @@ const registerSupplier = async (req, res) => {
   try {
     const { name, email, password, address, phone } = req.body;
     const photoIdFiles = req.files?.photoId;
-    console.log(req.files);
+
 
     // Check for missing fields
-    if (!name || !email || !password || !address || !phone || !photoIdFiles) {
+    if (!name || !email || !password || !address || !phone) {
       return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (!photoIdFiles) {
+      return res.status(400).json({ message: "Please upload a photo ID file" });
     }
 
     // Ensure only one file is uploaded
@@ -124,12 +128,6 @@ const addProduct = async (req, res) => {
       rentPerDay, deposit, salePrice, rentalEndDate, terms, returnPolicy
     } = req.body;
 
-    // Convert string booleans to actual booleans
-    // const isAvailableForRent = availableForRent === "true";
-    // const isAvailableForSale = availableForSale === "true";
-
-
-
 
     let isAvailableForRent = availableForRent?.toString().trim() === "true";
     let isAvailableForSale = availableForSale?.toString().trim() === "true";
@@ -148,7 +146,10 @@ const addProduct = async (req, res) => {
     const image4 = req.files.image4 && req.files.image4[0];
 
     const images = [image1, image2, image3, image4].filter((item) => item !== undefined);
-    // console.log(images);
+
+    if (images.length === 0) {
+      return res.status(400).json({ message: "Please upload at least one image." });
+    }
 
     let imagesUrl = await Promise.all(
       images.map(async (item) => {
@@ -191,7 +192,22 @@ const addProduct = async (req, res) => {
     });
 
     await newProduct.save();
-    res.status(201).json({ message: "Product added successfully.", product: newProduct });
+
+
+    // Update the supplier's document by adding the product ID to supplierGoods
+    try {
+      await supplierModel.findByIdAndUpdate(
+        supplierId,
+        { $push: { supplierGoods: newProduct._id } }, // Push product ID to supplierGoods
+        { new: true } // Return updated document
+      );
+      res.status(201).json({ message: "Product added successfully.", product: newProduct });
+    }
+
+    catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Some issue in syncing new product with supplierGoods" });
+    }
 
   } catch (error) {
     console.error("Error adding product:", error);
@@ -205,12 +221,98 @@ const listProducts = async (req, res) => {
 
 // Function for removing a product
 const removeProduct = async (req, res) => {
-  res.status(200).json({ message: "API working for removing a product" });
+  try {
+    const { id: productId } = req.params; // Extract product ID from URL
+    console.log(req.params);
+    console.log(req.supplier);
+    const supplierId = req.supplier.id; // Extract supplier ID from authenticated user
+
+    // Find the product
+    const product = await productModel.findById(productId);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "productModel not found" });
+    }
+
+    // Ensure the product belongs to the supplier
+    if (product.supplierId.toString() !== supplierId) {
+      return res.status(403).json({ success: false, message: "Unauthorized action" });
+    }
+
+    // Delete the product
+    await productModel.findByIdAndDelete(productId);
+
+    // Remove the product from the supplier's `goods` array
+    await supplierModel.findByIdAndUpdate(
+      supplierId,
+      { $pull: { supplierGoods: productId } }, // Remove product ID from `goods`
+      { new: true }
+    );
+
+    res.status(200).json({ success: true, message: "Product removed successfully", removedProductid: productId });
+  } catch (error) {
+    console.error("Error removing product:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 };
 
 // For getting single product information
 const singleProduct = async (req, res) => {
-  res.status(200).json({ message: "API working for fetching single product information" });
+  try {
+    const { id: productId } = req.params; // Extract product ID from URL
+
+    // Find the product and populate supplier details (only name and address)
+    const product = await productModel.findById(productId).populate({
+      path: "supplierId",
+      select: "name address", // Only fetch supplier name & address
+    });
+
+    // If product not found, return 404
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product with the given ID not found",
+      });
+    }
+
+    // Structured response
+    res.status(200).json({
+      success: true,
+      message: "Product retrieved successfully",
+      product: {
+        id: product._id,
+        name: product.name,
+        description: product.description,
+        quantity: product.quantity,
+        images: product.images,
+        availableForRent: product.availableForRent,
+        availableForSale: product.availableForSale,
+        rentDetails: product.availableForRent
+          ? {
+            rentPerDay: product.rentPerDay,
+            deposit: product.deposit,
+            rentalEndDate: product.rentalEndDate,
+          }
+          : null,
+        salePrice: product.availableForSale ? product.salePrice : null,
+        terms: product.terms,
+        returnPolicy: product.returnPolicy,
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt,
+
+        supplier: {
+          id: product.supplierId._id,
+          name: product.supplierId.name,
+          address: product.supplierId.address,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Unable to retrieve product.",
+    });
+  }
 };
 
 // Function for editing a product
