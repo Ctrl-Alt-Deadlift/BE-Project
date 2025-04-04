@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 import supplierModel from "../models/supplier.model.js";
 import productModel from "../models/product.model.js";
+import mongoose from "mongoose";
 
 // JWT Secret Key (should be stored in environment variables)
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -12,12 +13,10 @@ const isValidPhoneNumber = (phone) => {
   return /^\d{10}$/.test(phone);
 };
 
-// Supplier Registration
 const registerSupplier = async (req, res) => {
   try {
     const { name, email, password, address, phone } = req.body;
     const photoIdFiles = req.files?.photoId;
-
 
     // Check for missing fields
     if (!name || !email || !password || !address || !phone) {
@@ -56,7 +55,7 @@ const registerSupplier = async (req, res) => {
     const uploadResult = await cloudinary.uploader.upload(photoIdFile.path, { resource_type: "image" });
     const photo_id_url = uploadResult.secure_url;
 
-    // Create Supplier
+    // Create Supplier with initial verification status
     const supplier = new supplierModel({
       name,
       email,
@@ -64,6 +63,9 @@ const registerSupplier = async (req, res) => {
       address,
       phone,
       photoId: photo_id_url, // Store Cloudinary URL
+      isVerifiedSupplier: false, // Initialized as not verified
+      status: "Under Review", // Initial status
+      adminMessage: "Your application is under review.", // Initial admin message
     });
 
     await supplier.save();
@@ -74,14 +76,23 @@ const registerSupplier = async (req, res) => {
     res.status(201).json({
       message: "Supplier registered successfully",
       token,
-      supplier: { name, email, phone, address, photoId: photo_id_url },
+      supplier: {
+        name,
+        email,
+        phone,
+        address,
+        photoId: photo_id_url,
+        isVerifiedSupplier: false,
+        status: "Under Review",
+        adminMessage: "Your application is under review.",
+      },
     });
-
   } catch (error) {
     console.error("Error in registerSupplier:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 // Supplier Login (by Email or Phone)
 const loginSupplier = async (req, res) => {
   try {
@@ -112,7 +123,7 @@ const loginSupplier = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      supplier: { name: supplier.name, email: supplier.email, phone: supplier.phone, photoId: supplier.photoId }
+      supplier: { name: supplier.name, email: supplier.email, phone: supplier.phone, photoId: supplier.photoId, supplierVerified: supplier.isVerifiedSupplier, status: supplier.status, adminMessage: supplier.adminMessage },
     });
 
   } catch (error) {
@@ -123,9 +134,31 @@ const loginSupplier = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
+    const supplierid = req.supplier.id; // Get supplier ID from decoded token
+
+    // Fetch the supplier document from the database
+    const supplier = await supplierModel.findById(supplierid);
+
+    if (!supplier) {
+      return res.status(401).json({ message: "Supplier not found" });
+    }
+
+    // Check if supplier is verified
+    if (!supplier.isVerifiedSupplier || supplier.status !== "Verified") {
+      return res.status(403).json({
+        message: "You are not authorized to add products.",
+        error: {
+          supplierStatus: supplier.status,
+          isVerifiedSupplier: supplier.isVerifiedSupplier,
+          adminMessage: supplier.adminMessage,
+        },
+      });
+    }
+
+
     const {
       name, description, quantity, availableForRent, availableForSale,
-      rentPerDay, deposit, salePrice, rentalEndDate, terms, returnPolicy
+      rentPerDay, deposit, salePrice, rentalEndDate, terms, returnPolicy, category, subCategory
     } = req.body;
 
 
@@ -158,7 +191,7 @@ const addProduct = async (req, res) => {
       })
     );
 
-    if (!name || !description || !quantity) {
+    if (!name || !description || !quantity || !category || !subCategory) {
       console.log('\n\n\nName', name, '\nDescription', description, '\nQuantity', quantity, '\nisAvailableForRent', isAvailableForRent, '\nisAvailableForSale', isAvailableForSale);
       return res.status(400).json({ message: "Missing required fields." });
     }
@@ -180,6 +213,8 @@ const addProduct = async (req, res) => {
       name,
       description,
       quantity,
+      category,
+      subCategory,
       availableForRent: isAvailableForRent,
       availableForSale: isAvailableForSale,
       rentPerDay: isAvailableForRent ? rentPerDay : null,
@@ -216,9 +251,34 @@ const addProduct = async (req, res) => {
 };
 // Function for listing products
 const listProducts = async (req, res) => {
-  res.status(200).json({ message: "API working for listing products" });
-};
+  try {
+    const supplierId = req.params.id;
+    console.log(req.params.id)
 
+    if (!supplierId) {
+      return res.status(400).json({ message: "Supplier ID is required." });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(supplierId)) {
+      return res.status(400).json({ message: "Invalid supplier ID." });
+    }
+
+    const supplier = await supplierModel.findById(supplierId).populate(
+      "supplierGoods"
+    );
+
+    if (!supplier) {
+      return res.status(404).json({ message: "Supplier not found." });
+    }
+
+    const products = supplier.supplierGoods;
+
+    res.status(200).json({ products });
+  } catch (error) {
+    console.error("Error listing products:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
 // Function for removing a product
 const removeProduct = async (req, res) => {
   try {
@@ -254,7 +314,6 @@ const removeProduct = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 // For getting single product information
 const singleProduct = async (req, res) => {
   try {
@@ -283,6 +342,8 @@ const singleProduct = async (req, res) => {
         name: product.name,
         description: product.description,
         quantity: product.quantity,
+        category: product.category,
+        subCategory: product.subCategory,
         images: product.images,
         availableForRent: product.availableForRent,
         availableForSale: product.availableForSale,
@@ -314,10 +375,96 @@ const singleProduct = async (req, res) => {
     });
   }
 };
-
 // Function for editing a product
 const editProduct = async (req, res) => {
-  res.status(200).json({ message: "API working for editing a product" });
+  try {
+    const productId = req.params.id;
+    const supplierId = req.supplier.id;
+    const {
+      name, description, quantity, availableForRent, availableForSale,
+      rentPerDay, deposit, salePrice, rentalEndDate, terms, returnPolicy, category, subCategory
+    } = req.body;
+    console.log(`Rent Available: ${availableForRent}, Sale Available: ${availableForSale}`);
+    let isAvailableForRent = availableForRent?.toString().trim() === "true";
+    let isAvailableForSale = availableForSale?.toString().trim() === "true";
+    console.log(`isAvailableForRent: ${isAvailableForRent}, isAvailableForSale: ${isAvailableForSale}`);
+    if (!isAvailableForRent && !isAvailableForSale) {
+      return res.status(400).json({ message: "Product should be atleast for rent or sale" });
+    }
+
+    // Check if product exists and belongs to the supplier
+    const product = await productModel.findOne({ _id: productId, supplierId });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found or unauthorized." });
+    }
+
+    // Validate request body
+    if (!name || !description || !quantity || !category || !subCategory) {
+      return res.status(400).json({ message: "Missing required fields." });
+    }
+
+    if (isAvailableForRent && (!rentPerDay || !deposit || !rentalEndDate)) {
+      return res.status(400).json({ message: "Rental details are required." });
+    }
+
+    if (isAvailableForSale && !salePrice) {
+      return res.status(400).json({ message: "Sale price is required." });
+    }
+
+    // Image handling
+    let imagesUrl = product.images; // Default to existing images
+
+    if (req.files && Object.keys(req.files).length > 0) {
+      const image1 = req.files.image1 && req.files.image1[0];
+      const image2 = req.files.image2 && req.files.image2[0];
+      const image3 = req.files.image3 && req.files.image3[0];
+      const image4 = req.files.image4 && req.files.image4[0];
+
+      const newImages = [image1, image2, image3, image4].filter((item) => item !== undefined);
+
+      if (newImages.length > 0) {
+        // Upload new images to Cloudinary
+        const newImagesUrls = await Promise.all(
+          newImages.map(async (item) => {
+            const result = await cloudinary.uploader.upload(item.path, { resource_type: 'image' });
+            return result.secure_url;
+          })
+        );
+        imagesUrl = newImagesUrls; // Replace existing images
+      }
+    }
+
+    // Update product
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      productId,
+      {
+        name,
+        description,
+        quantity,
+        category,
+        subCategory,
+        availableForRent: isAvailableForRent,
+        availableForSale: isAvailableForSale,
+        rentPerDay: isAvailableForRent ? rentPerDay : null,
+        deposit: isAvailableForRent ? deposit : null,
+        rentalEndDate: isAvailableForRent ? rentalEndDate : null,
+        salePrice: isAvailableForSale ? salePrice : null,
+        images: imagesUrl,
+        terms,
+        returnPolicy
+      },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(500).json({ message: "Failed to update product." });
+    }
+
+    res.status(200).json({ message: "Product updated successfully.", product: updatedProduct });
+  } catch (error) {
+    console.error("Error editing product:", error);
+    res.status(500).json({ message: "Internal Server Error." });
+  }
 };
 
 

@@ -42,11 +42,27 @@ const supplierSchema = new mongoose.Schema(
       ref: "product", // Reference to Product Model
       default: [],
     },
+    isVerifiedSupplier: {
+      type: Boolean,
+      default: false,
+    },
+    status: {
+      type: String,
+      enum: ["Under Review", "Verified", "Rejected"], // Updated enum values
+      default: "Under Review",
+    },
+    adminMessage: {
+      type: String,
+    },
+    verifiedAt: {
+      type: Date,
+    },
   },
   { minimize: false, timestamps: true }
 );
 
 // Use existing model if available, otherwise create a new one
-const supplierModel = mongoose.models.supplier || mongoose.model("supplier", supplierSchema);
+const supplierModel =
+  mongoose.models.supplier || mongoose.model("supplier", supplierSchema);
 
 export default supplierModel;

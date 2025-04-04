@@ -8,6 +8,18 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
 
+    category: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    subCategory: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     description: {
       type: String,
       required: true,
@@ -83,11 +95,27 @@ const productSchema = new mongoose.Schema(
       ref: "supplier",
       required: true,
     },
+    isVerifiedProduct: {
+      type: Boolean,
+      default: false,
+    },
+    status: {
+      type: String,
+      enum: ["Under Review", "Verified", "Rejected"], // Updated enum values
+      default: "Under Review",
+    },
+    adminMessage: {
+      type: String,
+    },
+    verifiedAt: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
 
 // Use existing model if available, otherwise create a new one
-const productModel = mongoose.models.product || mongoose.model("product", productSchema);
+const productModel =
+  mongoose.models.product || mongoose.model("product", productSchema);
 
 export default productModel;
