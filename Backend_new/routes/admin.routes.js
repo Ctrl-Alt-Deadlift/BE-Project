@@ -1,12 +1,14 @@
 import express from "express"
-import { adminLogin, adminRegister } from "../controllers/admin.controller.js";
+import { adminLogin, removeSupplier } from "../controllers/admin.controller.js";
 import upload from "../middleware/multer.js";
+import adminAuth from "../middleware/adminAuth.js";
 
 
 const adminRouter = express.Router();
 
 adminRouter.post('/login', adminLogin);
-adminRouter.post('/register', adminRegister);
+adminRouter.delete('/removeSupplier/:id', adminAuth, removeSupplier);
+
 
 
 export default adminRouter;
