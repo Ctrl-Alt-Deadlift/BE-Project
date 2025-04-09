@@ -53,6 +53,7 @@ const adminLogin = async (req, res) => {
     return res.status(401).json({ message: "Invalid credentials." });
   }
 };
+
 const removeSupplier = async (req, res) => {
   const { id } = req.params;
 
@@ -85,5 +86,74 @@ const removeSupplier = async (req, res) => {
   }
 };
 
+const removeProduct = async (req, res) => {
+  const { id } = req.params;
 
-export { adminLogin, removeSupplier };
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid product ID." });
+  }
+
+  try {
+    const product = await productModel.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found." });
+    }
+
+    const supplierId = product.supplierId;
+
+    // Remove the product
+    const deletedProduct = await productModel.findByIdAndDelete(id);
+
+    if (deletedProduct) {
+      // Remove the product's ID from the supplier's supplierGoods array
+      await supplierModel.findByIdAndUpdate(
+        supplierId,
+        { $pull: { supplierGoods: id } },
+        { new: true } // Optional: Return the updated supplier document
+      );
+
+      res.status(200).json({ message: "Product removed successfully." });
+    } else {
+      // This case should ideally not happen if findById worked, but for safety:
+      res.status(500).json({ message: "Failed to remove product." });
+    }
+  } catch (error) {
+    console.error("Error removing product:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+}
+
+const supplierVerification = async (req, res) => {
+  res.status(200).json({ message: "Supplier verified successfully." });
+}
+const productVerification = async (req, res) => {
+  res.status(200).json({ message: "Product verified successfully." });
+}
+
+const editProduct = async (req, res) => {
+  res.status(200).json({ message: "Product edited successfully." });
+}
+
+const listSuppliers = async (req, res) => {
+  res.status(200).json({ message: "List of suppliers." });
+}
+
+const listProducts = async (req, res) => {
+  res.status(200).json({ message: "List of products." });
+}
+
+const singleProduct = async (req, res) => {
+  res.status(200).json({ message: "Single product details." });
+}
+
+const singleSupplier = async (req, res) => {
+  res.status(200).json({ message: "Single supplier details." });
+}
+
+
+
+
+
+
+export { adminLogin, removeSupplier, removeProduct, supplierVerification, productVerification, editProduct, listSuppliers, listProducts, singleProduct, singleSupplier };
