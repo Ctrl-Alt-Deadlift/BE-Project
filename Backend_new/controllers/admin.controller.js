@@ -125,31 +125,251 @@ const removeProduct = async (req, res) => {
 }
 
 const supplierVerification = async (req, res) => {
-  res.status(200).json({ message: "Supplier verified successfully." });
+  const { id } = req.params;
+  const { isVerifiedSupplier, status, adminMessage } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid supplier ID." });
+  }
+
+  if (isVerifiedSupplier === undefined || status === undefined || adminMessage === undefined || !status || !adminMessage || isVerifiedSupplier === null || isVerifiedSupplier === "") {
+    return res.status(400).json({ message: "Please provide isVerifiedSupplier, status, and adminMessage in the request body." });
+  }
+
+  if (typeof isVerifiedSupplier !== 'boolean') {
+    return res.status(400).json({ message: "isVerifiedProduct must be a boolean value." });
+  }
+
+
+  if (typeof adminMessage !== 'string') {
+    return res.status(400).json({ message: "adminMessage must be a string." });
+  }
+
+  if (!["Verified", "Rejected", "Under Review"].includes(status)) {
+    return res.status(400).json({ message: "Invalid status value." });
+  }
+
+  try {
+    const updatedSupplier = await supplierModel.findByIdAndUpdate(
+      id,
+      { isVerifiedSupplier, status, adminMessage, verifiedAt: isVerifiedSupplier ? new Date() : undefined },
+      { new: true, runValidators: true } // Return the updated document and run schema validators
+    );
+
+    if (!updatedSupplier) {
+      return res.status(404).json({ message: "Supplier not found." });
+    }
+
+    res.status(200).json({ message: "Supplier verification status updated successfully.", supplier: updatedSupplier });
+  } catch (error) {
+    console.error("Error verifying supplier:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
 }
 const productVerification = async (req, res) => {
-  res.status(200).json({ message: "Product verified successfully." });
+  const { id } = req.params;
+  const { isVerifiedProduct, status, adminMessage } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid product ID." });
+  }
+
+  if (isVerifiedProduct === undefined || status === undefined || adminMessage === undefined) {
+    return res.status(400).json({ message: "Please provide isVerifiedProduct, status, and adminMessage in the request body." });
+  }
+
+  if (typeof isVerifiedProduct !== 'boolean') {
+    return res.status(400).json({ message: "isVerifiedProduct must be a boolean value." });
+  }
+
+  if (!["Verified", "Rejected", "Under Review"].includes(status)) {
+    return res.status(400).json({ message: "Invalid status value." });
+  }
+
+  if (typeof adminMessage !== 'string') {
+    return res.status(400).json({ message: "adminMessage must be a string." });
+  }
+
+  try {
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      { isVerifiedProduct, status, adminMessage, verifiedAt: isVerifiedProduct ? new Date() : undefined },
+      { new: true, runValidators: true } // Return updated document and run schema validators
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found." });
+    }
+
+    res.status(200).json({ message: "Product verification status updated successfully.", product: updatedProduct });
+  } catch (error) {
+    console.error("Error verifying product:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
 }
 
 const editProduct = async (req, res) => {
-  res.status(200).json({ message: "Product edited successfully." });
+  try {
+    const productId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ message: "Invalid product ID." });
+    }
+
+    const {
+      name, description, quantity, availableForRent, availableForSale,
+      rentPerDay, deposit, salePrice, rentalEndDate, terms, returnPolicy, category, subCategory,
+      supplierId // Admin can also change the supplier
+    } = req.body;
+
+    console.log(`Rent Available: ${availableForRent}, Sale Available: ${availableForSale}`);
+    let isAvailableForRentBool = availableForRent?.toString().trim() === "true";
+    let isAvailableForSaleBool = availableForSale?.toString().trim() === "true";
+    console.log(`isAvailableForRent: ${isAvailableForRentBool}, isAvailableForSale: ${isAvailableForSaleBool}`);
+
+    if (!isAvailableForRentBool && !isAvailableForSaleBool) {
+      return res.status(400).json({ message: "Product should be at least for rent or sale" });
+    }
+
+    // Validate request body (basic presence checks)
+    if (!name || !description || !quantity || !category || !subCategory || !terms || !returnPolicy) {
+      return res.status(400).json({ message: "Missing required basic fields." });
+    }
+
+    if (isAvailableForRentBool && (!rentPerDay || !deposit || !rentalEndDate)) {
+      return res.status(400).json({ message: "Rental details are required if available for rent." });
+    }
+
+    if (isAvailableForSaleBool && !salePrice) {
+      return res.status(400).json({ message: "Sale price is required if available for sale." });
+    }
+
+    // Image handling
+    let imagesUrl = [];
+    const existingProduct = await productModel.findById(productId);
+    if (existingProduct && existingProduct.images) {
+      imagesUrl = [...existingProduct.images]; // Start with existing images
+    }
+
+    if (req.files && Object.keys(req.files).length > 0) {
+      const newImages = [
+        req.files.image1?.[0],
+        req.files.image2?.[0],
+        req.files.image3?.[0],
+        req.files.image4?.[0],
+      ].filter(Boolean);
+
+      if (newImages.length > 0) {
+        // Upload new images to Cloudinary
+        const newImagesUrls = await Promise.all(
+          newImages.map(async (item) => {
+            const result = await cloudinary.uploader.upload(item.path, { resource_type: 'image' });
+            return result.secure_url;
+          })
+        );
+        imagesUrl = newImagesUrls; // Replace all images with the newly uploaded ones
+      }
+    }
+
+    const updatePayload = {
+      name,
+      description,
+      quantity: parseInt(quantity),
+      category,
+      subCategory,
+      availableForRent: isAvailableForRentBool,
+      availableForSale: isAvailableForSaleBool,
+      rentPerDay: isAvailableForRentBool ? parseFloat(rentPerDay) : null,
+      deposit: isAvailableForRentBool ? parseFloat(deposit) : null,
+      rentalEndDate: isAvailableForRentBool ? rentalEndDate : null,
+      salePrice: isAvailableForSaleBool ? parseFloat(salePrice) : null,
+      images: imagesUrl,
+      terms,
+      returnPolicy,
+    };
+
+    // Allow admin to update supplierId if provided and valid
+    if (supplierId && mongoose.Types.ObjectId.isValid(supplierId)) {
+      updatePayload.supplierId = supplierId;
+    } else if (supplierId) {
+      return res.status(400).json({ message: "Invalid supplier ID provided." });
+    }
+
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      productId,
+      updatePayload,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found." });
+    }
+
+    res.status(200).json({ message: "Product updated successfully by admin.", product: updatedProduct });
+
+  } catch (error) {
+    console.error("Error editing product by admin:", error);
+    res.status(500).json({ message: "Internal Server Error." });
+  }
 }
 
 const listSuppliers = async (req, res) => {
-  res.status(200).json({ message: "List of suppliers." });
-}
+  try {
+    const suppliers = await supplierModel.find();
+    res.status(200).json({ message: "List of suppliers.", suppliers });
+  } catch (error) {
+    console.error("Error listing suppliers:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
 
 const listProducts = async (req, res) => {
-  res.status(200).json({ message: "List of products." });
-}
+  try {
+    const products = await productModel.find().populate('supplierId', 'name email');
+    res.status(200).json({ message: "List of products.", products });
+  } catch (error) {
+    console.error("Error listing products:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
 
 const singleProduct = async (req, res) => {
-  res.status(200).json({ message: "Single product details." });
-}
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid product ID." });
+  }
+
+  try {
+    const product = await productModel.findById(id).populate('supplierId', 'name email');
+    if (!product) {
+      return res.status(404).json({ message: "Product not found." });
+    }
+    res.status(200).json({ message: "Single product details.", product });
+  } catch (error) {
+    console.error("Error fetching single product:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
 
 const singleSupplier = async (req, res) => {
-  res.status(200).json({ message: "Single supplier details." });
-}
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid supplier ID." });
+  }
+
+  try {
+    const supplier = await supplierModel.findById(id);
+    if (!supplier) {
+      return res.status(404).json({ message: "Supplier not found." });
+    }
+    res.status(200).json({ message: "Single supplier details.", supplier });
+  } catch (error) {
+    console.error("Error fetching single supplier:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
 
 
 
