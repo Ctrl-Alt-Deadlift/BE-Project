@@ -106,6 +106,7 @@ const productSchema = new mongoose.Schema(
     },
     adminMessage: {
       type: String,
+      default: "The product is not yet verified"
     },
     verifiedAt: {
       type: Date,
