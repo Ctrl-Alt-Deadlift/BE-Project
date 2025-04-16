@@ -1,7 +1,6 @@
 import React from 'react'
 import { Routes, Route } from "react-router-dom"
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import AddProduct from './pages/AddProduct.jsx'
@@ -16,7 +15,9 @@ const App = () => {
     <div className='bg-black'>
       <ToastContainer />
       <Routes>
-        <Route path="/" element={<Home />} />
+
+        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/addproduct" element={<AddProduct />} />
         <Route path="/request" element={<Requests />} />
