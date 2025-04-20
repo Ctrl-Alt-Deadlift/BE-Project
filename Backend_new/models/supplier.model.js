@@ -37,6 +37,11 @@ const supplierSchema = new mongoose.Schema(
       required: true,
     },
 
+    profilePhoto: {
+      type: String,
+      required: true,
+    },
+
     supplierGoods: {
       type: [mongoose.Schema.Types.ObjectId], // Array of product IDs
       ref: "product", // Reference to Product Model

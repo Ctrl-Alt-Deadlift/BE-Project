@@ -17,6 +17,7 @@ const registerSupplier = async (req, res) => {
   try {
     const { name, email, password, address, phone } = req.body;
     const photoIdFiles = req.files?.photoId;
+    const profilePhotoFiles = req.files?.profilePhoto;
 
     // Check for missing fields
     if (!name || !email || !password || !address || !phone) {
@@ -27,12 +28,21 @@ const registerSupplier = async (req, res) => {
       return res.status(400).json({ message: "Please upload a photo ID file" });
     }
 
-    // Ensure only one file is uploaded
+    if (!profilePhotoFiles) {
+      return res.status(400).json({ message: "Please upload a profile photo file" });
+    }
+
+    // Ensure only one file for each
     if (!Array.isArray(photoIdFiles) || photoIdFiles.length !== 1) {
       return res.status(400).json({ message: "Only one photo ID file is allowed" });
     }
 
-    const photoIdFile = photoIdFiles[0]; // Get the single file
+    if (!Array.isArray(profilePhotoFiles) || profilePhotoFiles.length !== 1) {
+      return res.status(400).json({ message: "Only one profile photo file is allowed" });
+    }
+
+    const photoIdFile = photoIdFiles[0]; // Get the single photoId file
+    const profilePhotoFile = profilePhotoFiles[0]; // Get the single profilePhoto file
 
     // Validate phone number format
     if (!isValidPhoneNumber(phone)) {
@@ -52,20 +62,25 @@ const registerSupplier = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Upload Photo ID to Cloudinary
-    const uploadResult = await cloudinary.uploader.upload(photoIdFile.path, { resource_type: "image" });
-    const photo_id_url = uploadResult.secure_url;
+    const photoIdUploadResult = await cloudinary.uploader.upload(photoIdFile.path, { resource_type: "image" });
+    const photo_id_url = photoIdUploadResult.secure_url;
 
-    // Create Supplier with initial verification status
+    // Upload Profile Photo to Cloudinary
+    const profilePhotoUploadResult = await cloudinary.uploader.upload(profilePhotoFile.path, { resource_type: "image" });
+    const profile_photo_url = profilePhotoUploadResult.secure_url;
+
+    // Create Supplier with both photoId and profilePhoto
     const supplier = new supplierModel({
       name,
       email,
       password: hashedPassword,
       address,
       phone,
-      photoId: photo_id_url, // Store Cloudinary URL
-      isVerifiedSupplier: false, // Initialized as not verified
-      status: "Under Review", // Initial status
-      adminMessage: "Your application is under review.", // Initial admin message
+      photoId: photo_id_url,
+      profilePhoto: profile_photo_url,
+      isVerifiedSupplier: false,
+      status: "Under Review",
+      adminMessage: "Your application is under review.",
     });
 
     await supplier.save();
@@ -82,6 +97,7 @@ const registerSupplier = async (req, res) => {
         phone,
         address,
         photoId: photo_id_url,
+        profilePhoto: profile_photo_url,
         isVerifiedSupplier: false,
         status: "Under Review",
         adminMessage: "Your application is under review.",
@@ -129,6 +145,32 @@ const loginSupplier = async (req, res) => {
   } catch (error) {
     console.error("Error in loginSupplier:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getSupplierInfo = async (req, res) => {
+  try {
+    // 1. Supplier ID is coming from the auth middleware
+    const supplierId = req.supplier.id;
+
+    // 2. Fetch supplier data from database
+    const supplier = await supplierModel.findById(supplierId)
+      .select("-password -__v") // remove sensitive fields
+      .lean();
+
+    // 3. Check if supplier exists
+    if (!supplier) {
+      return res.status(404).json({ message: "Supplier not found" });
+    }
+
+    // 4. Respond with supplier data
+    return res.status(200).json({
+      message: "Supplier info fetched successfully",
+      supplier,
+    });
+  } catch (error) {
+    console.error("Error fetching supplier info:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -475,5 +517,6 @@ export {
   addProduct,
   removeProduct,
   singleProduct,
-  editProduct
+  editProduct,
+  getSupplierInfo
 };

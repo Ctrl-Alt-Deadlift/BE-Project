@@ -18,6 +18,7 @@ const LoginRegister = () => {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [photoId, setPhotoId] = useState(null);
+  const [profilePhoto, setprofilePhoto] = useState(null);
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const { navigate, backendUrl, token, setToken } = useContext(sellerContext);
   const [isSubmitting, setIsSubmitting] = useState(false); // New loading state
@@ -33,6 +34,7 @@ const LoginRegister = () => {
     formData.append("address", address);
     formData.append("phone", phone);
     formData.append("photoId", photoId);
+    formData.append("profilePhoto", profilePhoto);
 
     try {
       const response = await axios.post(backendUrl + '/api/supplier/register', formData, {
@@ -139,6 +141,18 @@ const LoginRegister = () => {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
+            <div>
+              <p className={`${inputStyles2} mb-[10px]`}>
+                Upload a Clear Profile Photo
+              </p>
+              <input
+                type="file"
+                className={`${inputStyles} bg-gray-700 p-2`}
+                required
+                onChange={(e) => setprofilePhoto(e.target.files[0])}
+              />
+
+            </div>
             <div>
               <p className={`${inputStyles2} mb-[10px]`}>
                 Upload PhotoId (Aadhar/Driving License/VoterId)
