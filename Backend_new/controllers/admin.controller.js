@@ -149,6 +149,16 @@ const supplierVerification = async (req, res) => {
     return res.status(400).json({ message: "Invalid status value." });
   }
 
+  if(status != "Verified" && isVerifiedSupplier == true) {
+    return res.status(400).json({ message: "isVerifiedSupplier cannot be true when status is Rejected or Under Review." });
+  }
+
+  if(status == "Verified" && isVerifiedSupplier == false) {
+    return res.status(400).json({ message: "isVerifiedSupplier cannot be false when status is Verified." });
+  }
+
+
+
   try {
     const updatedSupplier = await supplierModel.findByIdAndUpdate(
       id,
@@ -188,6 +198,14 @@ const productVerification = async (req, res) => {
 
   if (typeof adminMessage !== 'string') {
     return res.status(400).json({ message: "adminMessage must be a string." });
+  }
+
+  if ((status == "Rejected" || status == "Under Review") && isVerifiedProduct == true) {
+    return res.status(400).json({ message: "isVerifiedProduct cannot be true when status is Rejected or Under Review." });
+  }
+
+  if ((status == "Verified") && isVerifiedProduct == false) {
+    return res.status(400).json({ message: "isVerifiedProduct cannot be false when status is Verified." });
   }
 
   try {

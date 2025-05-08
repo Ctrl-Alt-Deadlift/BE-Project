@@ -1,7 +1,11 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import { sellerContext } from '../Context/sellerContext.jsx';
+import { RiDeleteBin7Line } from "react-icons/ri";
+import ConfirmDeleteModal from './ConfirmDelete.jsx';
+
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -9,6 +13,20 @@ const ProductDetails = () => {
   const { backendUrl, token } = useContext(sellerContext);
 
   const [product, setProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${backendUrl}/api/supplier/remove/${product.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Product deleted successfully!");
+      navigate("/home");
+    } catch (error) {
+      toast.error("Failed to delete product");
+    }
+  };
+
 
   const fetchProductDetails = async () => {
     try {
@@ -106,6 +124,16 @@ const ProductDetails = () => {
         <p className="text-gray-700">{product.quantity} units</p>
       </div>
 
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Category</h2>
+        <p className="text-gray-700">{product.category}</p>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Sub Category</h2>
+        <p className="text-gray-700">{product.subCategory}</p>
+      </div>
+
       {/* Terms and Conditions */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Terms and Conditions</h2>
@@ -118,11 +146,31 @@ const ProductDetails = () => {
         <p className="text-gray-700">{product.returnPolicy || 'No return policy provided.'}</p>
       </div>
 
+
       {/* Date Added */}
       <div className="text-sm text-gray-500">
         <p>Added on: {new Date(product.createdAt).toLocaleString()}</p>
       </div>
+
+      <button onClick={() => setIsModalOpen(true)} className="group border-2 border-red-500 bg-white text-red-500 px-4 py-2 rounded-md hover:bg-red-500 hover:text-white my-8">
+        <div className="flex items-center gap-2">
+          <RiDeleteBin7Line className="h-6 w-6 text-red-500 group-hover:text-white" />
+          <span className="font-semibold">Delete Product</span>
+        </div>
+      </button>
+
+      <ConfirmDeleteModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleDelete}
+      />
+
+
+
+
     </div>
+
+
   );
 };
 

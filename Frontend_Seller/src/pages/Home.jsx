@@ -36,6 +36,7 @@ const Home = () => {
   const fetchSupplierProducts = async () => {
     try {
       const authToken = token;
+      console.log('Token:', authToken.id);
 
       if (!authToken) {
         console.error('Token not found.');
