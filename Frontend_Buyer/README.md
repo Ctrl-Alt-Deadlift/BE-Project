@@ -1,0 +1,1 @@
+1. Due to Navlink in the Navbar if you inspect you can see that, the page currently active has a active class ,while you inspect in the classes a active class is added to the CSS
