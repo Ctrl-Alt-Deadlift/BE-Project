@@ -1,0 +1,1 @@
+Started with a new branch, before this I have completed the google login functionality just have to merge the manual login logic with google login, this logic will be implemented in the subsequent commits.
