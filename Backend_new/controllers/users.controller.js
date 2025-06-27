@@ -1,99 +1,94 @@
 import userModel from "../models/user.model.js";
-import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+
 
 dotenv.config();
 
 
 const loginUser = async (req, res) => {
-
   try {
-    const { email, password } = req.body;
+    // validation done by middleware
+    const { emailOrPhone, password } = req.body;
+    // Find user by email or phone
+    const user = await userModel.findOne({
+      $or: [
+        { email: emailOrPhone },
+        { phone: emailOrPhone }
+      ]
+    });
 
-    // Check if email and password are provided
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email and password are required" });
-    }
-
-    // Validate email format
-    if (!validator.isEmail(email)) {
-      return res.status(400).json({ message: "Invalid email format" });
-    }
-
-    // Find user by email
-    const user = await userModel.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: "User not found please register first !" });
+      return res.status(404).json({ message: "User not found with provided credentials." });
     }
 
-    // Compare passwords
+    // Check if user has a password (i.e. not a Google-only account)
+    if (!user.password) {
+      return res.status(400).json({ message: "This account was created with Google. Please login with Google." });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Incorrect password." });
     }
 
-    // Generate JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign(
+      { _id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_TIMEOUT }
+    );
 
-    // Send response with token
     res.status(200).json({
       message: "Login successful",
       token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
+      user,
     });
+
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Login Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, phone, password } = req.body;
 
-    // Check if all fields are provided
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "All fields are required." });
-    }
-
-    // Validate email
-    if (!validator.isEmail(email)) {
-      return res.status(400).json({ message: "Invalid email format." });
-    }
-
-    // Check for strong password
-    if (!validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
-      return res.status(400).json({ message: "Password must be at least 8 characters long and include an uppercase letter, a number, and a special character." });
-    }
-
-    // Check if user already exists
-    const existingUser = await userModel.findOne({ email });
+    const existingUser = await userModel.findOne({
+      $or: [{ email }, { phone }]
+    });
     if (existingUser) {
-      return res.status(409).json({ message: "User with this email already exists." });
+      return res.status(409).json({ message: "User already exists with this email or phone number." });
     }
 
-    // Hash the password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create new user
-    const newUser = new userModel({ name, email, password: hashedPassword });
-    await newUser.save();
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Generate JWT token
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+    const user = await userModel.create({
+      name,
+      email,
+      phone,
+      password: hashedPassword,
+      loginType: "manual", // explicitly set
+      // image will be default
+    });
 
-    res.status(201).json({ message: "User registered successfully.", token });
+    const token = jwt.sign(
+      { _id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_TIMEOUT }
+    );
+
+    res.status(201).json({
+      message: "User registered successfully",
+      token,
+      user,
+    });
   } catch (error) {
-    console.error("Error registering user:", error);
-    res.status(500).json({ message: "Internal server error." });
+    console.error("Register Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 

@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useGoogleLogin } from "@react-oauth/google";
 import { googleAuth } from "./api";
 import GoogleButton from "react-google-button";
+import axios from "axios";
 
 
 const inputStyles = "border border-gray-600 bg-gray-700 p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500";
@@ -49,18 +50,75 @@ const GoogleLoginPage = () => {
 		flow: "auth-code",
 	});
 
-	const handleManualLogin = (e) => {
+	const handleManualLogin = async (e) => {
 		e.preventDefault();
-		console.log("Logging in user (dummy)");
-		toast.info("Manual login triggered (dummy logic)");
-	};
 
+		try {
+			const response = await axios.post(
+				`${import.meta.env.VITE_BACKEND_URL}/api/user/login`,
+				{
+					emailOrPhone,
+					password
+				}
+			);
+
+			const { token, user } = response.data;
+
+			localStorage.setItem("user-info", JSON.stringify({
+				token,
+				name: user.name,
+				email: user.email,
+				image: user.image,
+			}));
+
+			toast.success("Logged in successfully!");
+			navigate("/dashboard");
+
+		} catch (error) {
+			console.error("Login error:", error);
+			if (error.response?.data?.message) {
+				toast.error(error.response.data.message);
+			} else {
+				toast.error("Login failed. Try again.");
+			}
+		}
+	};
 	const handleRegister = async (e) => {
 		e.preventDefault();
-		console.log("Registering user (dummy)");
-		toast.info("Manual registration triggered (dummy logic)");
-	};
+		try {
+			const response = await axios.post(
+				`${import.meta.env.VITE_BACKEND_URL}/api/user/register`,
+				{
+					name,
+					email: emailOrPhone,
+					phone,
+					password,
+				}
+			);
 
+			const { token, user } = response.data;
+
+			// Store user info in localStorage
+			localStorage.setItem("user-info", JSON.stringify({
+				token,
+				name: user.name,
+				email: user.email,
+				image: user.image, // Google image or default from backend
+			}));
+
+			toast.success("Registration successful!");
+			navigate("/dashboard");
+
+		} catch (error) {
+			console.error("Registration error:", error);
+
+			if (error.response?.data?.message) {
+				toast.error(error.response.data.message);
+			} else {
+				toast.error("Something went wrong. Please try again.");
+			}
+		}
+	};
 	return (
 		<div className="flex items-center justify-center min-h-screen bg-gray-900 text-white px-4">
 			<div className="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
@@ -102,17 +160,6 @@ const GoogleLoginPage = () => {
 							className={inputStyles}
 							required
 						/>
-						<div>
-							<p className="text-sm text-gray-400">Upload a Profile Photo</p>
-							<input
-								type="file"
-								accept="image/*"
-								onChange={(e) => setProfilePhoto(e.target.files[0])}
-								className="text-sm text-gray-400"
-								required
-							/>
-						</div>
-
 						<button type="submit" className={buttonStyles}>
 							Register
 						</button>
