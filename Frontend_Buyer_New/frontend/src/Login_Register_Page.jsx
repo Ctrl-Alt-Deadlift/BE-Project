@@ -16,7 +16,7 @@ const GoogleLoginPage = () => {
 	const [password, setPassword] = useState("");
 	const [name, setName] = useState("");
 	const [phone, setPhone] = useState("");
-	const [profilePhoto, setProfilePhoto] = useState(null);
+	
 
 	const navigate = useNavigate();
 

@@ -1,5 +1,5 @@
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import GoogleLogin from './GoogleLogin';
+import GoogleLogin from './Login_Register_Page';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import { useState } from 'react';
@@ -10,7 +10,7 @@ import { ToastContainer } from 'react-toastify';
 function App() {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const GoogleWrapper = () => (
-		<GoogleOAuthProvider clientId="421600310723-eo870lvg7kmdka9jlar54rkbppdco05j.apps.googleusercontent.com">
+		<GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
 			<GoogleLogin></GoogleLogin>
 		</GoogleOAuthProvider>
 	)

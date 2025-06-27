@@ -13,9 +13,7 @@ const Login = ({ setToken }) => {
   const submitHandler = async (e) => {
     try {
       e.preventDefault();
-      // console.log(password, email)
       const response = await axios.post(backendUrl + '/api/user/admin', { email, password });
-      // console.log(response);
       if (response.status === 200) {
         toast.success("Welcome Back!", {
           position: "top-center",
