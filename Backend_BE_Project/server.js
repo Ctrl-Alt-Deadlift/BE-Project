@@ -6,9 +6,6 @@ import connectCloudinary from './config/cloudinary.js'
 import supplierRouter from './routes/supplier.routes.js'
 import userRouter from './routes/user.routes.js'
 import adminRouter from './routes/admin.routes.js'
-// import productRouter from './routes/prouductRoute.js'
-// import cartRouter from './routes/cartRoute.js'
-// import orderRouter from './routes/orderRoutes.js'
 
 // Configure App
 
@@ -38,4 +35,4 @@ app.get('/', (req, res) => {
   res.status(200).send(`API is Working.`);
 });
 
-app.listen(port, () => console.log(`Server has started on PORT: ${port}`));
+app.listen(port, () => console.log(`Backend server for Final Year Project successfully launched and listening on designated port: ${port}`));

@@ -1,10 +1,4 @@
-// validation.js
-
 import { body, validationResult } from 'express-validator';
-// You might need to specify the locale for isMobilePhone if it's not detected automatically
-// or if you want to be explicit, e.g., 'en-IN' for India.
-// If you're importing isMobilePhone directly, you'd do:
-// import { isMobilePhone } from 'validator';
 
 export const registerValidationRules = [
   // Name Validation
