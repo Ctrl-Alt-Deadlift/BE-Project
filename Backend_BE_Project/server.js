@@ -35,4 +35,4 @@ app.get('/', (req, res) => {
   res.status(200).send(`API is Working.`);
 });
 
-app.listen(port, () => console.log(`Backend server for Final Year Project successfully launched and listening on designated port: ${port}`));
+app.listen(port, () => console.log(`\n\nBackend server for Final Year Project successfully launched and listening on designated port: ${port}`));

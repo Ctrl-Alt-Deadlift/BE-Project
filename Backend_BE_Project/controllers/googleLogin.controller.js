@@ -4,19 +4,18 @@ import userModel from '../models/user.model.js';
 import { oauth2Client } from '../config/googleClient.js';
 
 const googleAuth = async (req, res) => {
-  console.log('Inside Google Auth Controller')
+  
   const code = req.query.code;
 
   try {
     const googleRes = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(googleRes.tokens);
-    console.log("Google Tokens:", googleRes.tokens);
     const userRes = await axios.get(
       `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
     );
 
     const { email, name, picture } = userRes.data;
-    console.log("User Data from Google:", userRes.data);
+
 
     let user = await userModel.findOne({ email });
 

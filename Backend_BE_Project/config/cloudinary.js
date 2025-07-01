@@ -9,7 +9,7 @@ const connectCloudinary = async () => {
 
   try {
     const result = await cloudinary.api.ping();
-    console.log("✅ Cloudinary Connected Successfully:", result.status);
+    console.log("Cloudinary Connected Successfully Printing the status ✅ ✅ :", result.status);
   } catch (error) {
     console.error("❌ Cloudinary Connection Error:", error);
   }
