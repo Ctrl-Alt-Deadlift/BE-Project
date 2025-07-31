@@ -52,3 +52,4 @@ cloudinary.config.js
 /uploads
 /temp
 .qodo
+.tmp.driveupload
