@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import GoogleButton from "react-google-button";
 import { googleAuth } from "../api";
+import { BuyerContext } from "../context/BuyerContext.jsx";
 
 const inputStyles = "border border-gray-600 bg-gray-700 p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500";
 const buttonStyles = "w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md transition";
@@ -15,6 +16,7 @@ const LoginRegisterPage = () => {
 	const [password, setPassword] = useState("");
 	const [name, setName] = useState("");
 	const [phone, setPhone] = useState("");
+	const { token, setToken } = useContext(BuyerContext);
 
 	const navigate = useNavigate();
 
@@ -26,6 +28,7 @@ const LoginRegisterPage = () => {
 				const token = result.data.token;
 
 				localStorage.setItem("user-info", JSON.stringify({ email, name, token, image }));
+				setToken(token);
 				toast.success("Logged in with Google!");
 				navigate("/home");
 			} else {
@@ -60,6 +63,7 @@ const LoginRegisterPage = () => {
 			}));
 
 			toast.success("Logged in successfully!");
+			setToken(token);
 			navigate("/home");
 		} catch (error) {
 			console.error("Login error:", error);
@@ -94,7 +98,7 @@ const LoginRegisterPage = () => {
 	};
 
 	return (
-		<div className="flex items-center justify-center min-h-screen bg-gray-900 text-white px-4">
+		<div className="flex items-center justify-center min-h-screen bg-gray-900 text-white px-4 w-full mx-0 my-0">
 			<div className="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
 				<h2 className="text-2xl font-bold text-center mb-6">
 					{isRegister ? "Register" : "Login"}

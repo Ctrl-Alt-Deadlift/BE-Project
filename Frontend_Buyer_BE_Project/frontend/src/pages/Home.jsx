@@ -1,30 +1,29 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar.jsx';
+import Hero from '../components/Hero.jsx'
 
 const Home = () => {
     const [userInfo, setUserInfo] = useState(null);
     const navigate = useNavigate();
 
-    useEffect(()=>{
+    useEffect(() => {
         const data = localStorage.getItem('user-info');
         const userData = JSON.parse(data);
         console.log(userData);
         setUserInfo(userData);
-    },[])
+    }, [])
 
-    const handleLogout = ()=>{
+    const handleLogout = () => {
         localStorage.removeItem('user-info');
         navigate('/login');
     }
 
     return (
         <>
-            <h1>Welcome {userInfo?.name}</h1>
-            <h3>{userInfo?.email}</h3>
-            <img src={userInfo?.image} alt={userInfo?.name}/>
-            <button onClick={handleLogout}
-            >Logout
-            </button>
+            <Navbar />
+            <Hero/>
+            <p>Home</p>
         </>
     )
 }

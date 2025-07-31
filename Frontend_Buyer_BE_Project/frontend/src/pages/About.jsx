@@ -1,8 +1,11 @@
-
+import Navbar from "../components/Navbar.jsx"
 
 const About = () => {
   return (
-    <div>About</div>
+    <div>
+      <Navbar />
+      <p>About</p>
+    </div>
   )
 }
 

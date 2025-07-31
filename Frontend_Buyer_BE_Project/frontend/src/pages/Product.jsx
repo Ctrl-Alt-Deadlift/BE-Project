@@ -1,11 +1,11 @@
 import Navbar from "../components/Navbar.jsx"
-const Collection = () => {
+const Product = () => {
   return (
     <div>
       <Navbar />
-      <p>Collection</p>
-      </div>
+      <p>Product</p>
+    </div>
   )
 }
 
-export default Collection
+export default Product
