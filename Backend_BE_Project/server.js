@@ -20,8 +20,28 @@ connectCloudinary();
 // all the incoming requests will be parsed as json
 app.use(express.json());
 
-// enable requests from the frontend
-app.use(cors());
+
+// Explicit CORS configuration
+// Dynamic CORS for all localhost ports
+const corsOptions = {
+  origin: (origin, callback) => {
+    // allow requests without origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+
+    // allow any localhost origin (e.g., 5173, 5174, etc.)
+    if (origin.startsWith('http://localhost:')) {
+      return callback(null, true);
+    }
+
+    // block everything else
+    callback(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, // if you use cookies or authentication
+};
+app.use(cors(corsOptions));
+
 
 app.use('/api/supplier', supplierRouter);
 app.use('/api/user', userRouter);
@@ -29,6 +49,8 @@ app.use('/api/admin', adminRouter);
 // app.use('/api/product', productRouter);
 // app.use('/api/cart', cartRouter);
 // app.use('/api/order', orderRouter);
+
+
 
 // api endpoints
 app.get('/', (req, res) => {

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar.jsx';
 import Hero from '../components/Hero.jsx'
+import LatestCollection from '../components/LatestCollection.jsx';
 
 const Home = () => {
     const [userInfo, setUserInfo] = useState(null);
@@ -23,6 +24,7 @@ const Home = () => {
         <>
             <Navbar />
             <Hero/>
+            <LatestCollection/>
             <p>Home</p>
         </>
     )

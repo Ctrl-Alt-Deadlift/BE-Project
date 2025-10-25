@@ -1,4 +1,5 @@
 import userModel from "../models/user.model.js";
+import productModel from "../models/product.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -92,6 +93,32 @@ const registerUser = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser };
+const listProductsForUser = async (req, res) => {
+  try {
+    // Fetch products that are verified and belong to a verified supplier.
+    const products = await productModel
+      .find({
+        status: "Verified",
+      })
+      .populate({
+        path: "supplierId",
+        select: "name email isVerifiedSupplier", // Select the fields you need
+        match: { isVerifiedSupplier: true }, // Filter suppliers that are verified
+      });
 
+    // Remove products where the supplier did not match the filter
+    const verifiedProducts = products.filter(product => product.supplierId !== null);
 
+    // Check if any products were found
+    if (verifiedProducts.length === 0) {
+      return res.status(404).json({ message: "No verified products from verified suppliers found." });
+    }
+
+    res.status(200).json({ message: "List of verified products.", products: verifiedProducts });
+  } catch (error) {
+    console.error("Error listing products for user:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export { registerUser, loginUser, listProductsForUser };

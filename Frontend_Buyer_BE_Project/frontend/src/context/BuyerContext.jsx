@@ -3,6 +3,7 @@ import { products } from "../assets/assets_new.js";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 
 
@@ -18,7 +19,32 @@ const BuyerContextProvider = (props) => {
   const [cartItems, setCartItems] = useState([]);
   const [rentalItems, setRentalItems] = useState([]);
   const [token, setToken] = useState('');
+  const [products, setProducts] = useState([]);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   // const navigate = useNavigate()
+
+
+   const getProductsData = async () => {
+    try {
+      const response = await axios.get(backendUrl + '/api/user/listProducts');
+      console.log('here in getProductsData');
+      console.log(response.data);
+      console.log(response.status);
+      if (response.status === 200) {
+        setProducts(response.data.products);
+      }
+      else {
+        console.log('From the getProuduct Data else statement');
+        toast.error(response.data.message);
+      }
+    }
+
+    catch (error) {
+      console.log(error);
+      console.log('From the getProuduct Data catch statement');
+      toast.error(error.message);
+    }
+  }
 
   const getCartCount = () => {
     let totalCount = 0;
@@ -67,6 +93,10 @@ const BuyerContextProvider = (props) => {
   useEffect(() => {
     console.log(cartItems);
   }, [cartItems]);
+
+   useEffect(() => {
+    getProductsData();
+  }, []);
 
   const getCartAmount = () => {
     let totalAmount = 0;
@@ -176,7 +206,7 @@ const BuyerContextProvider = (props) => {
 
   const value = {
     products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, addToCart, cartItems,
-    getCartCount, updateQuantity, getCartAmount, addToCart_r, rentalItems, setRentalItems,
+    getCartCount, updateQuantity, getCartAmount, addToCart_r, rentalItems, setRentalItems,getProductsData,
     getCartCount_r, updateQuantity_r, getCartAmount_r, updateDuration, calculateDeposit,token,setToken
   }
 
