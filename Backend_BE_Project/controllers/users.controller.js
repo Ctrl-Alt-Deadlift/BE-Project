@@ -107,7 +107,10 @@ const listProductsForUser = async (req, res) => {
       });
 
     // Remove products where the supplier did not match the filter
-    const verifiedProducts = products.filter(product => product.supplierId !== null);
+     const verifiedProducts = products.filter(product => product.supplierId !== null);
+
+    // const verifiedProducts = products;
+
 
     // Check if any products were found
     if (verifiedProducts.length === 0) {

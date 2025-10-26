@@ -6,13 +6,18 @@ import ProductItem from './ProductItem.jsx';
 
 const BestSeller = () => {
 
-  const { products } = useContext(ShopContext);
+  const { Products } = useContext(ShopContext);
   const [bestSeller, setBestSeller] = useState([]);
 
-  useEffect(() => {
-    const bestProduct = products.filter((item) => (item.TopRental === true));
-    setBestSeller(bestProduct.slice(0, 5));
-  }, [products])
+useEffect(() => {
+    // Filter products that are available for rent AND NOT available for sale
+    const rentOnlyProducts = Products.filter(product => 
+      product.availableForRent === true 
+    );
+    
+    // Set the first 5 items from that filtered list
+    setBestSeller(rentOnlyProducts.slice(0, 5));
+  }, [Products]);
 
   return (
     <div className="my-10">
@@ -26,7 +31,14 @@ const BestSeller = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6">
         {
           bestSeller.map((item, index) => (
-            <ProductItem key={index} id={item._id} name={item.name} image={item.image} salePrice={item.sale_price} rentPrice={item.rent_per_day} />
+            <ProductItem 
+                        key={index} 
+                        id={item._id} 
+                        image={item.images}     // Changed from 'image'
+                        name={item.name} 
+                        salePrice={item.salePrice} // Changed from 'sale_price'
+                        rentPrice={item.rentPerDay} // Changed from 'rent_per_day'
+                      />
           ))
         }
       </div>

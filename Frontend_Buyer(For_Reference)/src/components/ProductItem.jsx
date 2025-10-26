@@ -16,7 +16,7 @@ const ProductItem = ({ id, image, name, salePrice, rentPrice }) => {
         onClick={handleClick}  // Scroll to top on click
       >
         <div className="overflow-hidden">
-          <img className="hover:scale-110 transition ease-in-out h-[225px] w-full" src={image[0]} alt={name} />
+          <img className="hover:scale-110 transition ease-in-out h-[225px] w-full" src={image[0] ? image[0] : ''} alt={name} />
         </div>
         <p className="pt-3 pb-1 text-sm font-semibold">{name}</p>
       </Link>
