@@ -76,8 +76,12 @@ import stripe_logo from './stripe_logo.png'
 import cross_icon from './cross_icon.png'
 import logo_fashionify from './logo_fashionify.png'
 import profile_image from './profile-icon.webp'
+import rensell_logo from './logo_rensell.png'
+import sale_logo from './sale.webp';
+import rent_logo from './rent.avif';
+import aboutus from './aboutus_img.webp'
 
-export const assets = {
+export const assets_new = {
   logo,
   hero_img,
   cart_icon,
@@ -98,7 +102,11 @@ export const assets = {
   cross_icon,
   hero_img1,
   logo_fashionify,
-  profile_icon
+  profile_icon,
+  rensell_logo,
+  sale_logo,
+  rent_logo,
+  aboutus
 }
 
 export const products = [

@@ -2,7 +2,7 @@ import LatestCollection from "../components/LatestCollection.jsx"
 import Hero from "../components/Hero.jsx"
 import BestSeller from "../components/BestSeller.jsx"
 import OurPolicy from "../components/OurPolicy.jsx"
-import NewsLetterBox from "../components/NewsLetterBox.jsx"
+
 
 const Home = () => {
   return (

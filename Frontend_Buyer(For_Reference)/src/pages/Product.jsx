@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react'
 import { ShopContext } from '../context/ShopContext.jsx'
-import { assets } from '../assets/assets_new.js'
+import { assets_new } from '../assets/assets_new.js'
 import RelatedProducts from '../components/RelatedProducts.jsx';
 import { toast } from 'react-toastify';
 
