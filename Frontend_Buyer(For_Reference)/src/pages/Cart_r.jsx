@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useContext } from 'react';
 import { ShopContext } from '../context/ShopContext.jsx';
 import Title from '../components/Title.jsx';
@@ -7,12 +6,14 @@ import CartTotal_r from '../components/CartTotal_r.jsx';
 import { MdOutlineArrowDropDownCircle } from "react-icons/md";
 
 const Cart_r = () => {
-  const { products, currency, rentalItems, updateQuantity_r, navigate, updateDuration } = useContext(ShopContext);
+  // CHANGED: Use 'Products' (uppercase) from context
+  const { Products, currency, rentalItems, updateQuantity_r, navigate, updateDuration } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
 
 
   useEffect(() => {
-    if (products.length > 0) {
+    // CHANGED: Check 'Products.length'
+    if (Products.length > 0) {
       const tempData = [];
       for (const items in rentalItems) {
         if (rentalItems[items].quantity > 0) {
@@ -25,7 +26,8 @@ const Cart_r = () => {
       }
       setCartData(tempData);
     }
-  }, [rentalItems, products]);
+    // CHANGED: Dependency is 'Products'
+  }, [rentalItems, Products]);
 
 
 
@@ -38,17 +40,24 @@ const Cart_r = () => {
 
       <div>
         {cartData.map((item, index) => {
-          const productData = products.find((product) => product._id === item._id);
+          // CHANGED: Find from 'Products'
+          const productData = Products.find((product) => product._id === item._id);
+          
+          // Add a check in case product is not found (prevents crash)
+          if (!productData) return null; 
+
           return (
             <div key={index} className='py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4rf_2fr_0.5fr_0.5fr] items-center gap-4'>
               <div className='flex items-start gap-6'>
-                <img className='w-16 sm:w-20' src={productData.image[0]} alt="" />
+                {/* CHANGED: Use 'images' (plural) */}
+                <img className='w-16 sm:w-20' src={productData.images[0]} alt="" />
                 <div>
                   <p className='text-xs sm:text-lg font-medium'>{productData.name}</p>
                   <div className='flex items-center gap-5 mt-2'>
 
                     <div className='flex flex-col gap-2'>
-                      <p>Rent: {currency}{productData.rent_per_day} / day</p>
+                      {/* CHANGED: Use 'rentPerDay' (camelCase) */}
+                      <p>Rent: {currency}{productData.rentPerDay} / day</p>
                       <p>Deposit: {currency}{productData.deposit} / item </p>
                     </div>
 
@@ -56,8 +65,8 @@ const Cart_r = () => {
                     <div className="relative">
                       <select
                         className="border border-gray-300 rounded-md py-2 px-3 text-sm w-full 
-               focus:ring-2 focus:ring-gray-400 focus:outline-none 
-               appearance-none pr-10 cursor-pointer"
+                       focus:ring-2 focus:ring-gray-400 focus:outline-none 
+                       appearance-none pr-10 cursor-pointer"
                         value={item.duration} // Bind value to state
                         onChange={(e) => updateDuration(item._id, Number(e.target.value))}// Update duration
                       >

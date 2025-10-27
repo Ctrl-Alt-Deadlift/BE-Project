@@ -1,241 +1,199 @@
-import { useParams } from 'react-router-dom';
-import { useState, useEffect, useContext } from 'react'
-import { ShopContext } from '../context/ShopContext.jsx'
-import { assets_new } from '../assets/assets_new.js'
-import RelatedProducts from '../components/RelatedProducts.jsx';
-import { toast } from 'react-toastify';
+import React, { useState, useEffect, useContext } from "react";
+import { useParams } from "react-router-dom";
+import { ShopContext } from "../context/ShopContext.jsx";
+import RelatedProducts from "../components/RelatedProducts.jsx";
+import { toast } from "react-toastify";
+import { assets } from "../assets/assets.js"; // star icons, placeholder, etc.
 
-
-const Product = () => {
+export default function Product() {
   const { productId } = useParams();
-  const { products, currency, addToCart, addToCart_r } = useContext(ShopContext);
-  const [productData, setProductData] = useState(null);
-  const [image, setImage] = useState('');
+  const { Products = [], currency = "₹", addToCart, addToCart_r } = useContext(ShopContext);
 
-  const fetchProductData = () => {
-    products.map((item) => {
-      if (item._id === productId) {
-        setProductData(item);
-        setImage(item.image[0]); // Set first image as default
-        return null;
-      }
-    });
-  };
+  const [productData, setProductData] = useState(null);
+  const [mainImage, setMainImage] = useState(assets.placeholder);
+  const [thumbIndex, setThumbIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchProductData();
-  }, [productId, products]);
+    // Find product when Products changes
+    const item = Products.find((p) => p._id === productId);
+    if (item) {
+      setProductData(item);
+      // prefer item.images (array) else try item.image
+      const images = Array.isArray(item.images)
+        ? item.images
+        : typeof item.image === "string"
+        ? [item.image]
+        : [];
+      setMainImage(images[0] || assets.placeholder);
+      setThumbIndex(0);
+    }
+    setLoading(false);
+  }, [Products, productId]);
 
-  return productData ? (
-    <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="animate-pulse">
+          <div className="h-72 bg-gray-200 rounded-lg" />
+          <div className="mt-4 h-6 w-3/4 bg-gray-200 rounded" />
+          <div className="mt-2 h-4 w-1/2 bg-gray-200 rounded" />
+        </div>
+      </div>
+    );
+  }
 
-      {/* Product Details */}
-      <div className="flex gap-12 flex-col sm:flex-row">
+  if (!productData) {
+    return (
+      <div className="p-6 text-center text-gray-600">
+        Product not found.
+      </div>
+    );
+  }
 
-        {/* Product Images */}
-        <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
-          <div className="flex sm:flex-col overflow-x-auto overflow-y-hidden sm:overflow-y-scroll px-2 justify-between sm:justify-normal sm:w-[18.7%] w-full">
-            {
-              productData.image.map((item, index) => (
-                <img
-                  onClick={() => setImage(item)}
-                  src={item}
-                  key={index}
-                  className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
-                  alt={productData.name}
-                />
+  const images = Array.isArray(productData.images)
+    ? productData.images
+    : typeof productData.image === "string"
+    ? [productData.image]
+    : [];
+
+  const handleAddToCart = () => {
+    addToCart && addToCart(productData._id, "default");
+    toast.success("Added to cart", { autoClose: 1500 });
+  };
+  const handleAddToRent = () => {
+    addToCart_r && addToCart_r(productData._id);
+    toast.success("Added to rental", { autoClose: 1500 });
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="bg-white rounded-2xl shadow-md p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left: Images */}
+        <div className="lg:col-span-7 flex flex-col lg:flex-row gap-4">
+          {/* Thumbnails (vertical on lg, horizontal on small) */}
+          <div className="flex lg:flex-col gap-3 w-full lg:w-20 overflow-x-auto lg:overflow-visible">
+            {images.length > 0 ? (
+              images.map((src, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    setMainImage(src);
+                    setThumbIndex(i);
+                  }}
+                  className={`rounded-md flex-shrink-0 transition-transform transform hover:scale-105 focus:outline-none border ${i === thumbIndex ? "border-black" : "border-transparent"}`}
+                >
+                  <img
+                    src={src}
+                    alt={`${productData.name} thumbnail ${i + 1}`}
+                    className="h-20 w-20 object-cover rounded-md"
+                    onError={(e) => (e.currentTarget.src = assets.placeholder)}
+                  />
+                </button>
               ))
-            }
+            ) : (
+              <img src={assets.placeholder} className="h-20 w-20 object-cover rounded-md" alt="placeholder" />
+            )}
           </div>
-          <div className="w-full sm:w-[80%]">
-            <img className="w-full h-auto" src={image} alt={productData.name} />
+
+          {/* Main image */}
+          <div className="flex-1 flex items-center justify-center">
+            <div className="w-full rounded-lg overflow-hidden border bg-gray-50">
+              <img
+                src={mainImage || assets.placeholder}
+                alt={productData.name}
+                className="w-full h-[420px] object-contain bg-white"
+                onError={(e) => (e.currentTarget.src = assets.placeholder)}
+              />
+            </div>
           </div>
         </div>
 
-        {/* Product Information */}
-        <div className="flex-1">
-          <h1 className="font-medium text-2xl mt-2">
-            {productData.name}
-          </h1>
+        {/* Right: Info */}
+        <div className="lg:col-span-5 flex flex-col justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900">{productData.name}</h1>
 
-          <div className="mt-2 text-gray-500 text-sm">
-            Category: <span className="text-black">{productData.category} → {productData.subcategory}</span>
+            <div className="mt-2 text-sm text-gray-600">
+              Category: <span className="text-gray-900 font-medium">{productData.category} → {productData.subCategory}</span>
+            </div>
+
+            {/* rating */}
+            <div className="flex items-center gap-2 mt-4">
+              <div className="flex -space-x-1">
+                <img src={assets.star_icon} alt="star" className="h-4 w-4" />
+                <img src={assets.star_icon} alt="star" className="h-4 w-4" />
+                <img src={assets.star_icon} alt="star" className="h-4 w-4" />
+                <img src={assets.star_icon} alt="star" className="h-4 w-4" />
+                <img src={assets.star_dull_icon} alt="star" className="h-4 w-4" />
+              </div>
+              <span className="text-sm text-gray-600">{productData.rating || "4.0"} · {productData.reviewsCount || 12} reviews</span>
+            </div>
+
+            {/* Price block */}
+            <div className="mt-6">
+              {productData.salePrice && (
+                <div className="text-3xl font-semibold text-green-600">{currency}{productData.salePrice}</div>
+              )}
+              {productData.rentPerDay && (
+                <div className="mt-1 text-2xl font-semibold text-blue-600">{currency}{productData.rentPerDay} <span className="text-base font-medium text-gray-600">/ day</span></div>
+              )}
+              {productData.deposit && (
+                <div className="mt-2 text-sm text-gray-500">Deposit: <b>{currency}{productData.deposit}</b></div>
+              )}
+            </div>
+
+            <p className="mt-6 text-gray-700 leading-relaxed">{productData.description}</p>
+
+            {/* Availability */}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm ${productData.availableForSale ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
+                {productData.availableForSale ? "Available for Sale" : "Not for Sale"}
+              </span>
+              <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm ${productData.availableForRent ? "bg-blue-50 text-blue-700" : "bg-red-50 text-red-700"}`}>
+                {productData.availableForRent ? "Available for Rent" : "Not for Rent"}
+              </span>
+              {productData.rentalEndDate && (
+                <span className="text-sm text-gray-600">Available till: {new Date(productData.rentalEndDate).toLocaleDateString()}</span>
+              )}
+            </div>
+
+            {/* Terms & return */}
+            <div className="mt-6 text-sm text-gray-600 space-y-1">
+              <div><b>Terms & Conditions:</b></div>
+              <div className="prose max-w-none text-gray-700">{productData.terms}</div>
+              <div className="mt-2"><b>Return Policy:</b> <span className="text-gray-700">{productData.returnPolicy}</span></div>
+            </div>
           </div>
 
-          <div className='flex gap-2 items-center mt-[20px]'>
-            <img className='h-3 w-3' src={assets.star_icon} alt="" />
-            <img className='h-3 w-3' src={assets.star_icon} alt="" />
-            <img className='h-3 w-3' src={assets.star_icon} alt="" />
-            <img className='h-3 w-3' src={assets.star_icon} alt="" />
-            <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
-          </div>
-
-
-          <p className="mt-5 text-3xl font-medium">{currency}{productData.rent_per_day} / day</p>
-          <p className="mt-2 text-gray-500 text-sm">
-            <b>Deposit Required:</b> {currency}{productData.deposit}
-          </p>
-
-          <p className="mt-5 text-gray-500 md:w-4/5">{productData.description}</p>
-
-          {/* Availability Status */}
-          <div className="mt-5">
-            <p className="text-sm">
-              {productData.available_for_rent ? "Available for Rent ✅" : "Not Available for Rent ❌"}
-            </p>
-            <p className="text-sm">
-              {productData.available_for_sale ? "Available for Sale ✅" : "Not Available for Sale ❌"}
-            </p>
-          </div>
-
-          {/* Rental Duration */}
-          <div className="mt-5 text-sm">
-            <p><b>Available Till:</b> {new Date(productData.available_till).toLocaleDateString()}</p>
-          </div>
-
-          {/* Terms and Conditions */}
-          <div className="mt-5 text-sm text-gray-600">
-            <b>Terms & Conditions:</b>
-            <p>{productData.terms_n_conditions}</p>
-          </div>
-
-          {/* Return Policy */}
-          <div className="mt-3 text-sm text-gray-600">
-            <b>Return Policy:</b>
-            <p>{productData.return_policy}</p>
-          </div>
-
-          {/* Add to Cart / Rent Now */}
-          <div className='flex gap-2'>
-            {/* Buy Now Button (Only if available_for_sale is true) */}
-            {productData.available_for_sale && (
-              <button
-                onClick={() => {
-                  addToCart(productData._id);
-                  toast.success("Item added to cart", { autoClose: 2000 });
-                }}
-                className="bg-black text-white py-3 px-8 active:bg-gray-700 hover:bg-gray-800 mt-5"
-              >
+          {/* Buttons */}
+          <div className="mt-6 flex gap-3">
+            {productData.availableForSale && (
+              <button onClick={handleAddToCart} className="flex-1 bg-black text-white py-3 rounded-lg hover:opacity-90 active:scale-95 transition">
                 Buy Now
               </button>
             )}
-
-            {/* Rent Now Button (Only if available_for_rent is true) */}
-            {productData.available_for_rent && (
-              <button
-                onClick={() => {
-                  addToCart_r(productData._id);
-                  toast.success("Item added to rental", { autoClose: 2000 });
-                }}
-                className="bg-green-500 text-white py-3 px-8 active:bg-gray-700 hover:bg-gray-800 mt-5"
-              >
+            {productData.availableForRent && (
+              <button onClick={handleAddToRent} className="flex-1 bg-emerald-600 text-white py-3 rounded-lg hover:opacity-90 active:scale-95 transition">
                 Rent Now
               </button>
             )}
 
-          </div>
-
-
-          <hr className="mt-8 sm:w-4/5"></hr>
-          <div className="text-sm text-gray-500 hover:text-gray-600 mt-5">
-            <p>100% original product</p>
-            <p>Damage charges apply as per terms.</p>
-            <p>Refund policy varies for rentals & sales.</p>
+            {/* Small actions */}
+            <button
+              onClick={() => navigator.clipboard?.writeText(window.location.href) && toast.info("Product link copied")}
+              className="px-4 py-3 border rounded-lg text-sm"
+            >
+              Share
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Description and Reviews */}
-      <div className="mt-20">
-        <div className='flex'>
-          <b className='border px-5 py-3 text-sm'>Description</b>
-          <p className='border px-5 py-3 text-sm'>Reviews (122)</p>
-        </div>
-
-        <div className='flex flex-col gap-2 border px-5 py-6 text-sm text-gray-500'>
-          <p className='text-gray-600 font-bold'>What customers say about this product.</p>
-          <div className='mb-4'>
-            <p className='text-green-500 font-semibold'>Pros: High-quality material, perfect fit, and durable design.</p>
-            <p className='text-red-500 font-semibold'>Cons: Delivery process is slow and needs improvement.</p>
-          </div>
-
-          {/* Dummy Reviews */}
-          <div className='flex flex-col gap-6'>
-            {/* Review 1 */}
-            <div>
-              <div className='flex gap-2 items-center'>
-                <img className='h-6 w-6 mr-5' src={assets.profile_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
-              </div>
-              <p>Good quality and comfortable fit, but delivery took longer than expected.</p>
-            </div>
-
-            {/* Review 2 */}
-            <div>
-              <div className='flex gap-2 items-center'>
-                <img className='h-6 w-6 mr-5' src={assets.profile_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
-              </div>
-              <p>The material is fine, but the delivery delays were disappointing.</p>
-            </div>
-
-            {/* Review 3 */}
-            <div>
-              <div className='flex gap-2 items-center'>
-                <img className='h-6 w-6 mr-5' src={assets.profile_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-              </div>
-              <p>Perfect fit and great quality! The product was worth the wait.</p>
-            </div>
-
-            {/* Review 4 */}
-            <div>
-              <div className='flex gap-2 items-center'>
-                <img className='h-6 w-6 mr-5' src={assets.profile_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
-              </div>
-              <p>The fit is nice, but I was not happy with the delivery time.</p>
-            </div>
-
-            {/* Review 5 */}
-            <div>
-              <div className='flex gap-2 items-center'>
-                <img className='h-6 w-6 mr-5' src={assets.profile_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
-                <img className='h-3 w-3' src={assets.star_dull_icon} alt="" />
-              </div>
-              <p>The product quality is good, but the slow delivery is a concern.</p>
-            </div>
-          </div>
-          <p className='text-gray-400 mt-[20px] cursor-pointer hover:text-gray-500'>read more...</p>
-        </div>
-
+      {/* Related */}
+      <div className="mt-10">
+        <RelatedProducts category={productData.category} subCategory={productData.subCategory} uid={productData._id} />
       </div>
-      {/*Similar Products */}
-      <RelatedProducts category={productData.category} subCategory={productData.subCategory} uid={productData._id} />
     </div>
-  ) : <div className="opacity-0"></div>;
-
-
+  );
 }
-
-export default Product;

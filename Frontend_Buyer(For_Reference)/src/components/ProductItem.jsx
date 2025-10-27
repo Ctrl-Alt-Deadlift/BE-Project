@@ -6,10 +6,14 @@ import clsx from "clsx"; // optional, useful for conditional classes
 const ProductItem = ({ id, image = [], name, salePrice, rentPrice, isNew }) => {
   const imgSrc = image?.[0] || "";
 
+  const handleClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="group relative rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
       {/* Image area */}
-      <Link to={`/product/${id}`} aria-label={`Open ${name} details`}>
+      <Link to={`/product/${id}`} onClick={handleClick} aria-label={`Open ${name} details`}>
         <div className="relative h-[260px] flex items-center justify-center overflow-hidden rounded-t-2xl bg-gray-50">
           {/* subtle gradient behind image to avoid pure white on white */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white opacity-40 pointer-events-none" />
@@ -35,6 +39,7 @@ const ProductItem = ({ id, image = [], name, salePrice, rentPrice, isNew }) => {
               </button>
               <Link
                 to={`/product/${id}`}
+                onClick={handleClick}
                 className="p-2 rounded-full hover:bg-gray-100 transition"
                 aria-label="View product"
                 // onClick={() => navigate(`/product/${id}`)}
@@ -55,7 +60,7 @@ const ProductItem = ({ id, image = [], name, salePrice, rentPrice, isNew }) => {
 
       {/* Card body */}
       <div className="px-4 py-3">
-        <Link to={`/product/${id}`} className="block" aria-label={`Open ${name} details`}>
+        <Link to={`/product/${id}`} onClick={handleClick} className="block" aria-label={`Open ${name} details`}>
           <h3 className="text-sm font-semibold text-gray-800 leading-tight line-clamp-2">
             {name}
           </h3>
@@ -78,6 +83,7 @@ const ProductItem = ({ id, image = [], name, salePrice, rentPrice, isNew }) => {
           <div className="ml-3">
             <Link
               to={`/product/${id}`}
+              onClick={handleClick}
               className={clsx(
                 "inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition",
                 "bg-black text-white hover:bg-gray-900"
